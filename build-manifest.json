@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "appVersion": "0.4.0",
+  "appVersion": "0.4.1",
   "deploymentTarget": "github-pages",
-  "sourceBuildManifestSha256": "33785b0afca1fd0f363e34b88831b5a1674521ba10fd90ad2fc728487c45e6c4",
+  "sourceBuildManifestSha256": "5ab2567307a41fe93529cfc7cc9a577b3a60b733e167060a7138d46e1ae870be",
   "adaptations": [
     "Add supported CSP meta before resources",
     "Omit Cloudflare-only _headers",
@@ -16,8 +16,8 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     "app.js": {
-      "bytes": 69581,
-      "sha256": "b20b4f6964a3ec9d90bf360fb67b9e41a98f1be8966480c80a0512e280b3529b"
+      "bytes": 71610,
+      "sha256": "88efcc69f99d39e4016e82728478638ef897cba823fce26a3586e92c0692ae01"
     },
     "assets/logo.png": {
       "bytes": 838061,
@@ -45,7 +45,11 @@
     },
     "build-info.json": {
       "bytes": 331,
-      "sha256": "dd09ca60aa80a11bac102aefff950bce01cbb853aa1f290aa434642e5ef85435"
+      "sha256": "a824e9a5f22d065899e8f7806a9117f546f486691d83d3d27685f0e2fcd81323"
+    },
+    "corpus-loader.js": {
+      "bytes": 2508,
+      "sha256": "097078e7069de773bd156c43a6fea4cdda557ee184aaae29ece3b87dcc505171"
     },
     "data/cn-entities-extra.json": {
       "bytes": 15002,
@@ -96,16 +100,16 @@
       "sha256": "b44882d67e63c54cfb98c7161ce5401c7d004a533a874d6b1cf3b16674d38713"
     },
     "index.html": {
-      "bytes": 1230,
-      "sha256": "4c543b289a66d3db2cb073a188b480047811a76fcbfb9a527e63a24bdb5e12b7"
+      "bytes": 1271,
+      "sha256": "27995a143eaabbb3451dd5c58416dfe521e1a9681c848e947846997d906a7b7b"
     },
     "rules.js": {
       "bytes": 53326,
       "sha256": "ab57304d41a6c424f3474847f592c4aa01a4c37301931fe42959e0aecc78e5fb"
     },
     "search.js": {
-      "bytes": 27479,
-      "sha256": "ab397907b3b6e923964a4ddc4c6a85d4a338cdad12920f0780c615f4d2553767"
+      "bytes": 28813,
+      "sha256": "bdc5f5d236ca6bc84e8841a0568c230e6ff7aed1d7f13d0fd47b3d6641c7228b"
     },
     "sources/china-control-list.pdf": {
       "bytes": 1308334,
@@ -120,8 +124,8 @@
       "sha256": "18c25ebce80df4143b71286a8f67cfe434b9efce21cc079338cdaf1451f7f6a2"
     },
     "styles.css": {
-      "bytes": 47387,
-      "sha256": "5e76fa17212ac885e9f6c1be0d571a27253f282ed678c484f51b7d08ee967eaa"
+      "bytes": 48036,
+      "sha256": "768d44d1a1573f940440343f262a4fc364a8f47178661146423f69e7a04b855d"
     },
     "vendor/pdfjs/LICENSE": {
       "bytes": 10174,

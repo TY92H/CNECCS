@@ -619,6 +619,14 @@ body:has(.overlay) #app{display:none}
 .sidebar-close{display:none}
 @media(max-width:900px){.nav-caption{padding-right:0}.sidebar-close{display:inline-grid;min-width:44px;min-height:44px;letter-spacing:normal}}
 
+/* Loading feedback stays beside the search form; the primary action keeps its label. */
+.search-foot .search-status{flex-wrap:wrap;min-width:0;line-height:1.6;gap:6px}
+.search-foot .search-status>span:not(.loading-dot){display:inline}
+.search-status .text-button{padding:2px 4px;min-height:32px;font-size:inherit;white-space:nowrap}
+.search-status .loading-dot{display:inline-block;flex:0 0 7px;width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:search-loading-pulse 1.4s ease-in-out infinite}
+@keyframes search-loading-pulse{50%{opacity:.3}}
+@media(prefers-reduced-motion:reduce){.search-status .loading-dot{animation:none}}
+
 .entity-search .search-body{padding:22px}
 .entity-field{display:block;min-width:0}
 .entity-field>span{display:block;font-weight:650;font-size:13px;margin-bottom:9px}

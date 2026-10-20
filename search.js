@@ -162,11 +162,11 @@
     return concepts.some(function (c) { return products.indexOf(c) !== -1; }) ? ['A'] : [];
   }
 
-  function createSearchEngine(records) {
-    records = Array.isArray(records) ? records : [];
+  function createSearchEngineBuilder() {
     var indexes = { CN: [], US: [] }, vocab = new Map(), snippetCache = new WeakMap();
     var compareCodes = new Intl.Collator(undefined, { numeric: true }).compare;
-    var prepared = records.map(function (record, index) {
+    var prepared = [];
+    function addRecord(record, index) {
       var title = pair(record.title), summary = pair(record.summary), blocks = record.blocks || [];
       var body = blocks.map(function (b) { return collectText(b.text) + ' ' + collectText(b.cells || b.rows || b.table); }).join('\n');
       body += '\n' + (record.subitems || []).map(function (s) { return [s.code || '', collectText(s.text), collectText(s.parentConditions)].join(' '); }).join('\n');
@@ -185,9 +185,12 @@
       unique((item.title + ' ' + item.keywords).match(/[a-z]{4,30}/g) || []).forEach(function (word) {
         if (!STOP.has(word)) vocab.set(word, (vocab.get(word) || 0) + 1);
       });
-      return item;
-    });
-    CONCEPTS.forEach(function (c) { c.terms.forEach(function (term) { if (/^[a-z]{4,30}$/.test(term)) vocab.set(term, (vocab.get(term) || 0) + 2); }); });
+      prepared[index] = item;
+    }
+    function finish() {
+      CONCEPTS.forEach(function (c) { c.terms.forEach(function (term) { if (/^[a-z]{4,30}$/.test(term)) vocab.set(term, (vocab.get(term) || 0) + 2); }); });
+      return { search: search };
+    }
 
     function interpret(query) {
       var raw = String(query == null ? '' : query).trim(), q = normalize(raw), codes = extractCodes(q), cas = extractCAS(q), hs = extractHS(q), specInput = raw;
@@ -321,7 +324,35 @@
       var page = scored.slice(offset, offset + limit).map(function (hit) { hit.snippet = makeSnippet(hit.record, hit.matchedTerms, snippetCache); return hit; });
       return { results: page, total: scored.length, interpretation: interpretation, offset: offset, limit: limit };
     }
-    return { search: search };
+    return { addRecord: addRecord, finish: finish };
+  }
+
+  function createSearchEngine(records) {
+    records = Array.isArray(records) ? records : [];
+    var builder = createSearchEngineBuilder();
+    records.forEach(builder.addRecord);
+    return builder.finish();
+  }
+
+  // Network-loaded corpora are prepared in bounded tasks so typing and rendering
+  // can continue. The same builder and original record order serve both APIs.
+  // A record cap also guarantees yielding when the device clock is coarse.
+  async function createSearchEngineAsync(records) {
+    records = Array.isArray(records) ? records : [];
+    var builder = createSearchEngineBuilder(), index = 0, length = records.length;
+    var now = typeof performance === 'object' && typeof performance.now === 'function'
+      ? function () { return performance.now(); } : Date.now;
+    function yieldTask() { return new Promise(function (resolve) { setTimeout(resolve, 0); }); }
+    await yieldTask();
+    while (index < length) {
+      var start = now(), count = 0;
+      do {
+        if (index in records) builder.addRecord(records[index], index);
+        index++; count++;
+      } while (index < length && count < 128 && now() - start < 8);
+      if (index < length) await yieldTask();
+    }
+    return builder.finish();
   }
 
   function makeSnippet(record, terms, cache) {
@@ -356,5 +387,5 @@
     return result;
   }
 
-  return { createSearchEngine: createSearchEngine, normalize: normalize, version: '1.0.0' };
+  return { createSearchEngine: createSearchEngine, createSearchEngineAsync: createSearchEngineAsync, normalize: normalize, version: '1.0.0' };
 });
