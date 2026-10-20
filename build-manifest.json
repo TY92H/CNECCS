@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "appVersion": "0.4.1",
+  "appVersion": "0.4.2",
   "deploymentTarget": "github-pages",
-  "sourceBuildManifestSha256": "5ab2567307a41fe93529cfc7cc9a577b3a60b733e167060a7138d46e1ae870be",
+  "sourceBuildManifestSha256": "53f79b788731a694d38efb0dcb7c5b91f3945f88b303d2ca8021e63a3fc3bf9e",
   "adaptations": [
     "Add supported CSP meta before resources",
     "Omit Cloudflare-only _headers",
@@ -16,8 +16,8 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     "app.js": {
-      "bytes": 71610,
-      "sha256": "88efcc69f99d39e4016e82728478638ef897cba823fce26a3586e92c0692ae01"
+      "bytes": 73545,
+      "sha256": "7111543bca61015580a607f23520b1b7b2ed1086a49c39765b4c26ec279b9d36"
     },
     "assets/logo.png": {
       "bytes": 838061,
@@ -45,7 +45,7 @@
     },
     "build-info.json": {
       "bytes": 331,
-      "sha256": "a824e9a5f22d065899e8f7806a9117f546f486691d83d3d27685f0e2fcd81323"
+      "sha256": "75030ea68244d4c090b8376cffb063610af817ec7dc262ac6a964745a0b61c1e"
     },
     "corpus-loader.js": {
       "bytes": 2508,
@@ -100,8 +100,8 @@
       "sha256": "b44882d67e63c54cfb98c7161ce5401c7d004a533a874d6b1cf3b16674d38713"
     },
     "index.html": {
-      "bytes": 1271,
-      "sha256": "27995a143eaabbb3451dd5c58416dfe521e1a9681c848e947846997d906a7b7b"
+      "bytes": 1343,
+      "sha256": "2b9aaeabdac7b8b252f57d4bf66369b8eaed0c3cb901051852155c509379d97e"
     },
     "rules.js": {
       "bytes": 53326,
@@ -124,8 +124,8 @@
       "sha256": "18c25ebce80df4143b71286a8f67cfe434b9efce21cc079338cdaf1451f7f6a2"
     },
     "styles.css": {
-      "bytes": 48036,
-      "sha256": "768d44d1a1573f940440343f262a4fc364a8f47178661146423f69e7a04b855d"
+      "bytes": 48874,
+      "sha256": "cf27ce48be81c5806b4e438a19e0c1667832fefe66b513adef6d2952338675ad"
     },
     "vendor/pdfjs/LICENSE": {
       "bytes": 10174,

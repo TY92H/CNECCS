@@ -627,6 +627,16 @@ body:has(.overlay) #app{display:none}
 @keyframes search-loading-pulse{50%{opacity:.3}}
 @media(prefers-reduced-motion:reduce){.search-status .loading-dot{animation:none}}
 
+.search-feedback-card{display:flex;align-items:flex-start;gap:16px;padding:22px;border:1px solid var(--line);border-radius:12px;background:#fff;scroll-margin-top:86px}
+.search-feedback-card h2{font-size:19px;margin:0 0 8px;line-height:1.4}
+.search-feedback-card p{margin:0;color:var(--muted);line-height:1.7}
+.search-feedback-card .secondary{margin-top:14px}
+.search-feedback-icon{flex:0 0 28px;color:var(--navy);padding-top:2px}
+.search-spinner{display:block;width:24px;height:24px;border:3px solid #dcecf2;border-top-color:var(--navy);border-radius:50%;animation:search-spin .8s linear infinite}
+@keyframes search-spin{to{transform:rotate(360deg)}}
+@media(max-width:600px){.search-feedback-card{gap:12px;padding:18px 14px}.search-feedback-card h2{font-size:17px}}
+@media(prefers-reduced-motion:reduce){.search-spinner{animation:none}}
+
 .entity-search .search-body{padding:22px}
 .entity-field{display:block;min-width:0}
 .entity-field>span{display:block;font-weight:650;font-size:13px;margin-bottom:9px}
