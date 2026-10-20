@@ -1,0 +1,13 @@
+node_modules/
+.wrangler/
+.dev.vars
+.env
+.env.*
+!.env.example
+dist/
+artifacts/
+CNECCS-preview.html
+CNECCS-complete-project.zip
+*.log
+__pycache__/
+.DS_Store
