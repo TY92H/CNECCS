@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "appVersion": "0.4.0",
+  "deploymentTarget": "github-pages",
+  "sourceBuildManifestSha256": "33785b0afca1fd0f363e34b88831b5a1674521ba10fd90ad2fc728487c45e6c4",
+  "adaptations": [
+    "Add supported CSP meta before resources",
+    "Omit Cloudflare-only _headers",
+    "Add .nojekyll",
+    "Replace build manifest with hashes of actual deployment files"
+  ],
+  "meaning": "File integrity only; not proof of browser acceptance, legal currency, or a live deployment.",
+  "files": {
+    ".nojekyll": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "app.js": {
+      "bytes": 69581,
+      "sha256": "b20b4f6964a3ec9d90bf360fb67b9e41a98f1be8966480c80a0512e280b3529b"
+    },
+    "assets/logo.png": {
+      "bytes": 838061,
+      "sha256": "3b173b95702773136dcff7a92804e5e08db07bc75c28d36cb948a603d2ee1db2"
+    },
+    "assets/source-figures/cn-app.png": {
+      "bytes": 29301,
+      "sha256": "b6a977a1620ea0e3b70df368a7c5176ca895b8e825c2a713349a09a6c0de2859"
+    },
+    "assets/source-figures/cn-code-structure.png": {
+      "bytes": 275761,
+      "sha256": "af9df253a4526523e6705144b89d7ea0389e29357738f70c84c642b5ad7aa769"
+    },
+    "assets/source-figures/cn-quality-factor.png": {
+      "bytes": 76051,
+      "sha256": "1433b4977a6743a8f4a08069efa2f5608a0aaa6d3f165df3e23426a0488d30b6"
+    },
+    "assets/source-figures/us-3b001-mrf.png": {
+      "bytes": 34156,
+      "sha256": "4704fbb8a104e234bc785887f5f74f7baba5df0ce158468659a238bcb35f5111"
+    },
+    "assets/source-figures/us-3b993-mrf.png": {
+      "bytes": 7741,
+      "sha256": "f1e3b469cdc732beb3210ae6f2638849c2d48a69e150b6a098920700687ef3a9"
+    },
+    "build-info.json": {
+      "bytes": 331,
+      "sha256": "dd09ca60aa80a11bac102aefff950bce01cbb853aa1f290aa434642e5ef85435"
+    },
+    "data/cn-entities-extra.json": {
+      "bytes": 15002,
+      "sha256": "ef260faae6da6e419dfe75520bf5ab28ee1c4bdc45401830592f464f107ea870"
+    },
+    "data/cn-entities-official-additions.json": {
+      "bytes": 61162,
+      "sha256": "5eea52dc052138e7eb5e734f64e1cf405bf378a0993c1c01a34b2427507112b0"
+    },
+    "data/cn-entities-upload.json": {
+      "bytes": 619548,
+      "sha256": "95ba6cf7685065e9803e89ac39b51df094ce86772212388f29b4aa54b898cac5"
+    },
+    "data/corpus.json": {
+      "bytes": 14002463,
+      "sha256": "19455b5020c6e3d5fc187c6cabe3cf3279b60c93235508bc311b60e7f33887c4"
+    },
+    "data/coverage.json": {
+      "bytes": 3517,
+      "sha256": "9475ee9cd26d998650a47e3ef4943b2d0711b8c9337026babb7845ad109adcca"
+    },
+    "data/source-pages.json": {
+      "bytes": 517970,
+      "sha256": "6ea0fdee9288680b32e0e0d2b1f3b335123f8ad445bdd711ea1752dbc7f99021"
+    },
+    "data/un-entities-auxiliary.json": {
+      "bytes": 5624317,
+      "sha256": "40e6af3852a363d3046fae69f89e09bd6c979f4a6064f377b8e7a3bec1c68cd3"
+    },
+    "data/us-entities-official.json": {
+      "bytes": 16894051,
+      "sha256": "68316c0224b2294eabcbc7fbed03ae3aea8bda2627dda625f80bb586b9ce1865"
+    },
+    "document-ui.js": {
+      "bytes": 26863,
+      "sha256": "432f52c0833ac88724a80206fa3d38a5845b136e29fbd77995c5f33ed302ae33"
+    },
+    "documents.js": {
+      "bytes": 30770,
+      "sha256": "bdb284479a4ea7c4d5728038f1874b766972fee598ec4b5ce82597fb39076ef8"
+    },
+    "entities-ui.js": {
+      "bytes": 35537,
+      "sha256": "63c8b42d47c119f599cbf514fa2a44e302136e3d1e12045f8798da44ff82dd0a"
+    },
+    "entities.js": {
+      "bytes": 46034,
+      "sha256": "b44882d67e63c54cfb98c7161ce5401c7d004a533a874d6b1cf3b16674d38713"
+    },
+    "index.html": {
+      "bytes": 1230,
+      "sha256": "4c543b289a66d3db2cb073a188b480047811a76fcbfb9a527e63a24bdb5e12b7"
+    },
+    "rules.js": {
+      "bytes": 53326,
+      "sha256": "ab57304d41a6c424f3474847f592c4aa01a4c37301931fe42959e0aecc78e5fb"
+    },
+    "search.js": {
+      "bytes": 27479,
+      "sha256": "ab397907b3b6e923964a4ddc4c6a85d4a338cdad12920f0780c615f4d2553767"
+    },
+    "sources/china-control-list.pdf": {
+      "bytes": 1308334,
+      "sha256": "b4be9b44fd90d82301290d6c17851bb8c0b33cb563e6287c359dd7a4d162deee"
+    },
+    "sources/china-licensing-catalog-2026.pdf": {
+      "bytes": 1344012,
+      "sha256": "7b609d90b0eff0dd457a57938f4d1f37cd2153340aff49bd9362ec64f13db9da"
+    },
+    "sources/us-commerce-control-list.htm": {
+      "bytes": 2345317,
+      "sha256": "18c25ebce80df4143b71286a8f67cfe434b9efce21cc079338cdaf1451f7f6a2"
+    },
+    "styles.css": {
+      "bytes": 47387,
+      "sha256": "5e76fa17212ac885e9f6c1be0d571a27253f282ed678c484f51b7d08ee967eaa"
+    },
+    "vendor/pdfjs/LICENSE": {
+      "bytes": 10174,
+      "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+    },
+    "vendor/pdfjs/PROVENANCE.md": {
+      "bytes": 1822,
+      "sha256": "3dd02c6276f79731ae5b727ce5660c6b7c29855ac8d2ca0ca600df9ab054130b"
+    },
+    "vendor/pdfjs/pdf.min.mjs": {
+      "bytes": 512483,
+      "sha256": "9fab0c910bf1484835c5c2aeb68f7eb3dfce7f9eb435a004526c5af86d70890c"
+    },
+    "vendor/pdfjs/pdf.worker.min.mjs": {
+      "bytes": 1312452,
+      "sha256": "bc0d1b88ea0b66196b1d36a58ac243c6d92adfe725624e2a9fdd381bdf8ef434"
+    }
+  }
+}
