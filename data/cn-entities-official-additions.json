@@ -1,0 +1,1069 @@
+{
+  "metadata": {
+    "datasetId": "cn-official-additions-20261019",
+    "checkedAt": "2026-10-19",
+    "recordCount": 33,
+    "newIdentityRecords": 26,
+    "statusReviewRecords": 7,
+    "completeChinaSanctionsCoverage": false,
+    "liveFeed": false,
+    "source": "Official ministry, central-bank and diplomatic-mission pages; English blocking-order names cross-referenced to the uploaded CSL",
+    "preserveOriginalUpload": true,
+    "limitations": [
+      {
+        "key": "CN-MPS-2008",
+        "zh": "第二批8人已另存 data/cn-entities-extra.json：逐名核对公安部公告的官方搜索索引摘录，原站正文仍返回521。该8条已补入历史身份检索，但完整别名、身份标识和当前状态尚待核验。",
+        "en": "The second batch of 8 persons is separately included in data/cn-entities-extra.json, with each name corroborated against indexed extracts of official MPS announcements. The original pages still return HTTP 521; complete aliases, identity fields and current status require review."
+      },
+      {
+        "key": "CN-MPS-identity-localization",
+        "zh": "已补充的公安部历史人员记录保留可核实的官方英文拼写；中文姓名、全量别名和身份证件尚未逐条核齐。",
+        "en": "Added historical MPS records retain verified official English spellings; Chinese names, full aliases and identity documents remain incomplete."
+      },
+      {
+        "key": "UN-China-implementation",
+        "zh": "联合国官方XML已独立保存为 data/un-entities-auxiliary.json（1010条：736人、274实体），默认不纳入中国法检索，仅供用户明确选择联合国辅助核对。中国执行通知、具体措施、船舶清单、豁免及动态移除仍需逐项映射；其中121条伊朗制度记录尤其不可自动视作中国法禁止。",
+        "en": "The official UN XML has been separately ingested into data/un-entities-auxiliary.json (1,010 records: 736 individuals and 274 entities). It is excluded from default Chinese-law screening and available only as an explicitly selected UN auxiliary source. Chinese implementation notices, regime-specific measures, vessel lists, exemptions and delistings still require mapping. In particular, the 121 Iran-regime entries must not automatically be treated as Chinese-law prohibitions."
+      },
+      {
+        "key": "CN-historical-and-unpublished",
+        "zh": "历史外交部记者会、未公开具体姓名的反制、各名单的所有后续变更及未列名但可能受措施影响的关联主体，未获得穷尽性认证。",
+        "en": "Historical press statements, unnamed countermeasures, every subsequent status change and unnamed affiliates potentially affected by measures have not been exhaustively certified."
+      }
+    ]
+  },
+  "records": [
+    {
+      "id": "cn-official-mps-2003-org-1",
+      "sourceKey": "CN-MPS",
+      "name": "Eastern Turkistan Islamic Movement",
+      "nameZh": "东突厥斯坦伊斯兰运动",
+      "aliases": [
+        "ETIM"
+      ],
+      "type": "Organization",
+      "status": "unknown",
+      "noticeDate": "2003-12-15",
+      "sourceUrl": "https://eu.china-mission.gov.cn/eng/more/1/",
+      "noticeTitle": {
+        "zh": "China identifies Eastern Turkistan terrorists",
+        "en": "First batch of MPS-designated terrorist organizations and persons"
+      },
+      "restrictions": {
+        "zh": "已核实该历史批次的官方列名。请先核对身份、最新认定及适用的资产冻结和反恐融资义务；不可据姓名相似直接作不利决定。未把历史资料自动标为截至今日仍然有效。",
+        "en": "Historical official designation verified. Confirm identity, the latest designation and applicable asset-freeze/counterterrorist-financing obligations. Name similarity alone does not establish identity. Historical inclusion is not automatically treated as currently effective."
+      },
+      "statusDate": "",
+      "statusUrl": "",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "nameZhProvenance": "Editorial Chinese rendering of the official English name; verify against the linked Chinese MPS notice.",
+      "statusLabel": {
+        "zh": "历史认定；现状待复核",
+        "en": "Historical designation; current status requires review"
+      }
+    },
+    {
+      "id": "cn-official-mps-2003-org-2",
+      "sourceKey": "CN-MPS",
+      "name": "Eastern Turkistan Liberation Organization",
+      "nameZh": "东突厥斯坦解放组织",
+      "aliases": [
+        "ETLO"
+      ],
+      "type": "Organization",
+      "status": "unknown",
+      "noticeDate": "2003-12-15",
+      "sourceUrl": "https://eu.china-mission.gov.cn/eng/more/1/",
+      "noticeTitle": {
+        "zh": "China identifies Eastern Turkistan terrorists",
+        "en": "First batch of MPS-designated terrorist organizations and persons"
+      },
+      "restrictions": {
+        "zh": "已核实该历史批次的官方列名。请先核对身份、最新认定及适用的资产冻结和反恐融资义务；不可据姓名相似直接作不利决定。未把历史资料自动标为截至今日仍然有效。",
+        "en": "Historical official designation verified. Confirm identity, the latest designation and applicable asset-freeze/counterterrorist-financing obligations. Name similarity alone does not establish identity. Historical inclusion is not automatically treated as currently effective."
+      },
+      "statusDate": "",
+      "statusUrl": "",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "nameZhProvenance": "Editorial Chinese rendering of the official English name; verify against the linked Chinese MPS notice.",
+      "statusLabel": {
+        "zh": "历史认定；现状待复核",
+        "en": "Historical designation; current status requires review"
+      }
+    },
+    {
+      "id": "cn-official-mps-2003-org-3",
+      "sourceKey": "CN-MPS",
+      "name": "World Uygur Youth Congress",
+      "nameZh": "世界维吾尔青年代表大会",
+      "aliases": [
+        "WUYC"
+      ],
+      "type": "Organization",
+      "status": "unknown",
+      "noticeDate": "2003-12-15",
+      "sourceUrl": "https://eu.china-mission.gov.cn/eng/more/1/",
+      "noticeTitle": {
+        "zh": "China identifies Eastern Turkistan terrorists",
+        "en": "First batch of MPS-designated terrorist organizations and persons"
+      },
+      "restrictions": {
+        "zh": "已核实该历史批次的官方列名。请先核对身份、最新认定及适用的资产冻结和反恐融资义务；不可据姓名相似直接作不利决定。未把历史资料自动标为截至今日仍然有效。",
+        "en": "Historical official designation verified. Confirm identity, the latest designation and applicable asset-freeze/counterterrorist-financing obligations. Name similarity alone does not establish identity. Historical inclusion is not automatically treated as currently effective."
+      },
+      "statusDate": "",
+      "statusUrl": "",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "nameZhProvenance": "Editorial Chinese rendering of the official English name; verify against the linked Chinese MPS notice.",
+      "statusLabel": {
+        "zh": "历史认定；现状待复核",
+        "en": "Historical designation; current status requires review"
+      }
+    },
+    {
+      "id": "cn-official-mps-2003-org-4",
+      "sourceKey": "CN-MPS",
+      "name": "Eastern Turkistan Information Center",
+      "nameZh": "东突厥斯坦新闻信息中心",
+      "aliases": [
+        "ETIC"
+      ],
+      "type": "Organization",
+      "status": "unknown",
+      "noticeDate": "2003-12-15",
+      "sourceUrl": "https://eu.china-mission.gov.cn/eng/more/1/",
+      "noticeTitle": {
+        "zh": "China identifies Eastern Turkistan terrorists",
+        "en": "First batch of MPS-designated terrorist organizations and persons"
+      },
+      "restrictions": {
+        "zh": "已核实该历史批次的官方列名。请先核对身份、最新认定及适用的资产冻结和反恐融资义务；不可据姓名相似直接作不利决定。未把历史资料自动标为截至今日仍然有效。",
+        "en": "Historical official designation verified. Confirm identity, the latest designation and applicable asset-freeze/counterterrorist-financing obligations. Name similarity alone does not establish identity. Historical inclusion is not automatically treated as currently effective."
+      },
+      "statusDate": "",
+      "statusUrl": "",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "nameZhProvenance": "Editorial Chinese rendering of the official English name; verify against the linked Chinese MPS notice.",
+      "statusLabel": {
+        "zh": "历史认定；现状待复核",
+        "en": "Historical designation; current status requires review"
+      }
+    },
+    {
+      "id": "cn-official-mps-2003-person-1",
+      "sourceKey": "CN-MPS",
+      "name": "Hasan Mahsum",
+      "nameZh": "",
+      "aliases": [],
+      "type": "Person",
+      "status": "unknown",
+      "noticeDate": "2003-12-15",
+      "sourceUrl": "https://eu.china-mission.gov.cn/eng/more/1/",
+      "noticeTitle": {
+        "zh": "China identifies Eastern Turkistan terrorists",
+        "en": "First batch of MPS-designated terrorist organizations and persons"
+      },
+      "restrictions": {
+        "zh": "已核实该历史批次的官方列名。请先核对身份、最新认定及适用的资产冻结和反恐融资义务；不可据姓名相似直接作不利决定。未把历史资料自动标为截至今日仍然有效。",
+        "en": "Historical official designation verified. Confirm identity, the latest designation and applicable asset-freeze/counterterrorist-financing obligations. Name similarity alone does not establish identity. Historical inclusion is not automatically treated as currently effective."
+      },
+      "statusDate": "",
+      "statusUrl": "",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "历史认定；现状待复核",
+        "en": "Historical designation; current status requires review"
+      },
+      "nameCoverageNote": {
+        "zh": "保留官方英文拼写；未臆造中文姓名、证件号码或其他身份标识。",
+        "en": "Official English spelling retained; no Chinese name, document number or other identifier has been invented."
+      }
+    },
+    {
+      "id": "cn-official-mps-2003-person-2",
+      "sourceKey": "CN-MPS",
+      "name": "Muhanmetemin Hazret",
+      "nameZh": "",
+      "aliases": [],
+      "type": "Person",
+      "status": "unknown",
+      "noticeDate": "2003-12-15",
+      "sourceUrl": "https://eu.china-mission.gov.cn/eng/more/1/",
+      "noticeTitle": {
+        "zh": "China identifies Eastern Turkistan terrorists",
+        "en": "First batch of MPS-designated terrorist organizations and persons"
+      },
+      "restrictions": {
+        "zh": "已核实该历史批次的官方列名。请先核对身份、最新认定及适用的资产冻结和反恐融资义务；不可据姓名相似直接作不利决定。未把历史资料自动标为截至今日仍然有效。",
+        "en": "Historical official designation verified. Confirm identity, the latest designation and applicable asset-freeze/counterterrorist-financing obligations. Name similarity alone does not establish identity. Historical inclusion is not automatically treated as currently effective."
+      },
+      "statusDate": "",
+      "statusUrl": "",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "历史认定；现状待复核",
+        "en": "Historical designation; current status requires review"
+      },
+      "nameCoverageNote": {
+        "zh": "保留官方英文拼写；未臆造中文姓名、证件号码或其他身份标识。",
+        "en": "Official English spelling retained; no Chinese name, document number or other identifier has been invented."
+      }
+    },
+    {
+      "id": "cn-official-mps-2003-person-3",
+      "sourceKey": "CN-MPS",
+      "name": "Dolqun Isa",
+      "nameZh": "",
+      "aliases": [],
+      "type": "Person",
+      "status": "unknown",
+      "noticeDate": "2003-12-15",
+      "sourceUrl": "https://eu.china-mission.gov.cn/eng/more/1/",
+      "noticeTitle": {
+        "zh": "China identifies Eastern Turkistan terrorists",
+        "en": "First batch of MPS-designated terrorist organizations and persons"
+      },
+      "restrictions": {
+        "zh": "已核实该历史批次的官方列名。请先核对身份、最新认定及适用的资产冻结和反恐融资义务；不可据姓名相似直接作不利决定。未把历史资料自动标为截至今日仍然有效。",
+        "en": "Historical official designation verified. Confirm identity, the latest designation and applicable asset-freeze/counterterrorist-financing obligations. Name similarity alone does not establish identity. Historical inclusion is not automatically treated as currently effective."
+      },
+      "statusDate": "",
+      "statusUrl": "",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "历史认定；现状待复核",
+        "en": "Historical designation; current status requires review"
+      },
+      "nameCoverageNote": {
+        "zh": "保留官方英文拼写；未臆造中文姓名、证件号码或其他身份标识。",
+        "en": "Official English spelling retained; no Chinese name, document number or other identifier has been invented."
+      }
+    },
+    {
+      "id": "cn-official-mps-2003-person-4",
+      "sourceKey": "CN-MPS",
+      "name": "Abudujelili Kalakash",
+      "nameZh": "",
+      "aliases": [],
+      "type": "Person",
+      "status": "unknown",
+      "noticeDate": "2003-12-15",
+      "sourceUrl": "https://eu.china-mission.gov.cn/eng/more/1/",
+      "noticeTitle": {
+        "zh": "China identifies Eastern Turkistan terrorists",
+        "en": "First batch of MPS-designated terrorist organizations and persons"
+      },
+      "restrictions": {
+        "zh": "已核实该历史批次的官方列名。请先核对身份、最新认定及适用的资产冻结和反恐融资义务；不可据姓名相似直接作不利决定。未把历史资料自动标为截至今日仍然有效。",
+        "en": "Historical official designation verified. Confirm identity, the latest designation and applicable asset-freeze/counterterrorist-financing obligations. Name similarity alone does not establish identity. Historical inclusion is not automatically treated as currently effective."
+      },
+      "statusDate": "",
+      "statusUrl": "",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "历史认定；现状待复核",
+        "en": "Historical designation; current status requires review"
+      },
+      "nameCoverageNote": {
+        "zh": "保留官方英文拼写；未臆造中文姓名、证件号码或其他身份标识。",
+        "en": "Official English spelling retained; no Chinese name, document number or other identifier has been invented."
+      }
+    },
+    {
+      "id": "cn-official-mps-2003-person-5",
+      "sourceKey": "CN-MPS",
+      "name": "Abudukadir Yapuquan",
+      "nameZh": "",
+      "aliases": [],
+      "type": "Person",
+      "status": "unknown",
+      "noticeDate": "2003-12-15",
+      "sourceUrl": "https://eu.china-mission.gov.cn/eng/more/1/",
+      "noticeTitle": {
+        "zh": "China identifies Eastern Turkistan terrorists",
+        "en": "First batch of MPS-designated terrorist organizations and persons"
+      },
+      "restrictions": {
+        "zh": "已核实该历史批次的官方列名。请先核对身份、最新认定及适用的资产冻结和反恐融资义务；不可据姓名相似直接作不利决定。未把历史资料自动标为截至今日仍然有效。",
+        "en": "Historical official designation verified. Confirm identity, the latest designation and applicable asset-freeze/counterterrorist-financing obligations. Name similarity alone does not establish identity. Historical inclusion is not automatically treated as currently effective."
+      },
+      "statusDate": "",
+      "statusUrl": "",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "历史认定；现状待复核",
+        "en": "Historical designation; current status requires review"
+      },
+      "nameCoverageNote": {
+        "zh": "保留官方英文拼写；未臆造中文姓名、证件号码或其他身份标识。",
+        "en": "Official English spelling retained; no Chinese name, document number or other identifier has been invented."
+      }
+    },
+    {
+      "id": "cn-official-mps-2003-person-6",
+      "sourceKey": "CN-MPS",
+      "name": "Abudumijit Muhammatkelim",
+      "nameZh": "",
+      "aliases": [],
+      "type": "Person",
+      "status": "unknown",
+      "noticeDate": "2003-12-15",
+      "sourceUrl": "https://eu.china-mission.gov.cn/eng/more/1/",
+      "noticeTitle": {
+        "zh": "China identifies Eastern Turkistan terrorists",
+        "en": "First batch of MPS-designated terrorist organizations and persons"
+      },
+      "restrictions": {
+        "zh": "已核实该历史批次的官方列名。请先核对身份、最新认定及适用的资产冻结和反恐融资义务；不可据姓名相似直接作不利决定。未把历史资料自动标为截至今日仍然有效。",
+        "en": "Historical official designation verified. Confirm identity, the latest designation and applicable asset-freeze/counterterrorist-financing obligations. Name similarity alone does not establish identity. Historical inclusion is not automatically treated as currently effective."
+      },
+      "statusDate": "",
+      "statusUrl": "",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "历史认定；现状待复核",
+        "en": "Historical designation; current status requires review"
+      },
+      "nameCoverageNote": {
+        "zh": "保留官方英文拼写；未臆造中文姓名、证件号码或其他身份标识。",
+        "en": "Official English spelling retained; no Chinese name, document number or other identifier has been invented."
+      }
+    },
+    {
+      "id": "cn-official-mps-2003-person-7",
+      "sourceKey": "CN-MPS",
+      "name": "Abudula Kariaji",
+      "nameZh": "",
+      "aliases": [],
+      "type": "Person",
+      "status": "unknown",
+      "noticeDate": "2003-12-15",
+      "sourceUrl": "https://eu.china-mission.gov.cn/eng/more/1/",
+      "noticeTitle": {
+        "zh": "China identifies Eastern Turkistan terrorists",
+        "en": "First batch of MPS-designated terrorist organizations and persons"
+      },
+      "restrictions": {
+        "zh": "已核实该历史批次的官方列名。请先核对身份、最新认定及适用的资产冻结和反恐融资义务；不可据姓名相似直接作不利决定。未把历史资料自动标为截至今日仍然有效。",
+        "en": "Historical official designation verified. Confirm identity, the latest designation and applicable asset-freeze/counterterrorist-financing obligations. Name similarity alone does not establish identity. Historical inclusion is not automatically treated as currently effective."
+      },
+      "statusDate": "",
+      "statusUrl": "",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "历史认定；现状待复核",
+        "en": "Historical designation; current status requires review"
+      },
+      "nameCoverageNote": {
+        "zh": "保留官方英文拼写；未臆造中文姓名、证件号码或其他身份标识。",
+        "en": "Official English spelling retained; no Chinese name, document number or other identifier has been invented."
+      }
+    },
+    {
+      "id": "cn-official-mps-2003-person-8",
+      "sourceKey": "CN-MPS",
+      "name": "Abulimit Turxun",
+      "nameZh": "",
+      "aliases": [],
+      "type": "Person",
+      "status": "unknown",
+      "noticeDate": "2003-12-15",
+      "sourceUrl": "https://eu.china-mission.gov.cn/eng/more/1/",
+      "noticeTitle": {
+        "zh": "China identifies Eastern Turkistan terrorists",
+        "en": "First batch of MPS-designated terrorist organizations and persons"
+      },
+      "restrictions": {
+        "zh": "已核实该历史批次的官方列名。请先核对身份、最新认定及适用的资产冻结和反恐融资义务；不可据姓名相似直接作不利决定。未把历史资料自动标为截至今日仍然有效。",
+        "en": "Historical official designation verified. Confirm identity, the latest designation and applicable asset-freeze/counterterrorist-financing obligations. Name similarity alone does not establish identity. Historical inclusion is not automatically treated as currently effective."
+      },
+      "statusDate": "",
+      "statusUrl": "",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "历史认定；现状待复核",
+        "en": "Historical designation; current status requires review"
+      },
+      "nameCoverageNote": {
+        "zh": "保留官方英文拼写；未臆造中文姓名、证件号码或其他身份标识。",
+        "en": "Official English spelling retained; no Chinese name, document number or other identifier has been invented."
+      }
+    },
+    {
+      "id": "cn-official-mps-2003-person-9",
+      "sourceKey": "CN-MPS",
+      "name": "Huadaberdi Haxerbik",
+      "nameZh": "",
+      "aliases": [],
+      "type": "Person",
+      "status": "unknown",
+      "noticeDate": "2003-12-15",
+      "sourceUrl": "https://eu.china-mission.gov.cn/eng/more/1/",
+      "noticeTitle": {
+        "zh": "China identifies Eastern Turkistan terrorists",
+        "en": "First batch of MPS-designated terrorist organizations and persons"
+      },
+      "restrictions": {
+        "zh": "已核实该历史批次的官方列名。请先核对身份、最新认定及适用的资产冻结和反恐融资义务；不可据姓名相似直接作不利决定。未把历史资料自动标为截至今日仍然有效。",
+        "en": "Historical official designation verified. Confirm identity, the latest designation and applicable asset-freeze/counterterrorist-financing obligations. Name similarity alone does not establish identity. Historical inclusion is not automatically treated as currently effective."
+      },
+      "statusDate": "",
+      "statusUrl": "",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "历史认定；现状待复核",
+        "en": "Historical designation; current status requires review"
+      },
+      "nameCoverageNote": {
+        "zh": "保留官方英文拼写；未臆造中文姓名、证件号码或其他身份标识。",
+        "en": "Official English spelling retained; no Chinese name, document number or other identifier has been invented."
+      }
+    },
+    {
+      "id": "cn-official-mps-2003-person-10",
+      "sourceKey": "CN-MPS",
+      "name": "Yasen Muhammat",
+      "nameZh": "",
+      "aliases": [],
+      "type": "Person",
+      "status": "unknown",
+      "noticeDate": "2003-12-15",
+      "sourceUrl": "https://eu.china-mission.gov.cn/eng/more/1/",
+      "noticeTitle": {
+        "zh": "China identifies Eastern Turkistan terrorists",
+        "en": "First batch of MPS-designated terrorist organizations and persons"
+      },
+      "restrictions": {
+        "zh": "已核实该历史批次的官方列名。请先核对身份、最新认定及适用的资产冻结和反恐融资义务；不可据姓名相似直接作不利决定。未把历史资料自动标为截至今日仍然有效。",
+        "en": "Historical official designation verified. Confirm identity, the latest designation and applicable asset-freeze/counterterrorist-financing obligations. Name similarity alone does not establish identity. Historical inclusion is not automatically treated as currently effective."
+      },
+      "statusDate": "",
+      "statusUrl": "",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "历史认定；现状待复核",
+        "en": "Historical designation; current status requires review"
+      },
+      "nameCoverageNote": {
+        "zh": "保留官方英文拼写；未臆造中文姓名、证件号码或其他身份标识。",
+        "en": "Official English spelling retained; no Chinese name, document number or other identifier has been invented."
+      }
+    },
+    {
+      "id": "cn-official-mps-2003-person-11",
+      "sourceKey": "CN-MPS",
+      "name": "Atahan Abuduhani",
+      "nameZh": "",
+      "aliases": [],
+      "type": "Person",
+      "status": "unknown",
+      "noticeDate": "2003-12-15",
+      "sourceUrl": "https://eu.china-mission.gov.cn/eng/more/1/",
+      "noticeTitle": {
+        "zh": "China identifies Eastern Turkistan terrorists",
+        "en": "First batch of MPS-designated terrorist organizations and persons"
+      },
+      "restrictions": {
+        "zh": "已核实该历史批次的官方列名。请先核对身份、最新认定及适用的资产冻结和反恐融资义务；不可据姓名相似直接作不利决定。未把历史资料自动标为截至今日仍然有效。",
+        "en": "Historical official designation verified. Confirm identity, the latest designation and applicable asset-freeze/counterterrorist-financing obligations. Name similarity alone does not establish identity. Historical inclusion is not automatically treated as currently effective."
+      },
+      "statusDate": "",
+      "statusUrl": "",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "历史认定；现状待复核",
+        "en": "Historical designation; current status requires review"
+      },
+      "nameCoverageNote": {
+        "zh": "保留官方英文拼写；未臆造中文姓名、证件号码或其他身份标识。",
+        "en": "Official English spelling retained; no Chinese name, document number or other identifier has been invented."
+      }
+    },
+    {
+      "id": "cn-official-mps-2012-person-1",
+      "sourceKey": "CN-MPS",
+      "name": "Nurmemet Memetmin",
+      "nameZh": "",
+      "aliases": [],
+      "type": "Person",
+      "status": "unknown",
+      "noticeDate": "2012-04-05",
+      "sourceUrl": "https://tr.china-embassy.gov.cn/eng/zt/xjzzq/201204/t20120416_1432144.htm",
+      "noticeTitle": {
+        "zh": "China publishes names of six terrorists",
+        "en": "Third batch of MPS-designated persons"
+      },
+      "restrictions": {
+        "zh": "已核实该历史批次的官方列名。请先核对身份、最新认定及适用的资产冻结和反恐融资义务；不可据姓名相似直接作不利决定。未把历史资料自动标为截至今日仍然有效。",
+        "en": "Historical official designation verified. Confirm identity, the latest designation and applicable asset-freeze/counterterrorist-financing obligations. Name similarity alone does not establish identity. Historical inclusion is not automatically treated as currently effective."
+      },
+      "statusDate": "",
+      "statusUrl": "",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "历史认定；现状待复核",
+        "en": "Historical designation; current status requires review"
+      }
+    },
+    {
+      "id": "cn-official-mps-2012-person-2",
+      "sourceKey": "CN-MPS",
+      "name": "Abdulkyum Kurban",
+      "nameZh": "",
+      "aliases": [],
+      "type": "Person",
+      "status": "unknown",
+      "noticeDate": "2012-04-05",
+      "sourceUrl": "https://tr.china-embassy.gov.cn/eng/zt/xjzzq/201204/t20120416_1432144.htm",
+      "noticeTitle": {
+        "zh": "China publishes names of six terrorists",
+        "en": "Third batch of MPS-designated persons"
+      },
+      "restrictions": {
+        "zh": "已核实该历史批次的官方列名。请先核对身份、最新认定及适用的资产冻结和反恐融资义务；不可据姓名相似直接作不利决定。未把历史资料自动标为截至今日仍然有效。",
+        "en": "Historical official designation verified. Confirm identity, the latest designation and applicable asset-freeze/counterterrorist-financing obligations. Name similarity alone does not establish identity. Historical inclusion is not automatically treated as currently effective."
+      },
+      "statusDate": "",
+      "statusUrl": "",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "历史认定；现状待复核",
+        "en": "Historical designation; current status requires review"
+      }
+    },
+    {
+      "id": "cn-official-mps-2012-person-3",
+      "sourceKey": "CN-MPS",
+      "name": "Paruh Tursun",
+      "nameZh": "",
+      "aliases": [],
+      "type": "Person",
+      "status": "unknown",
+      "noticeDate": "2012-04-05",
+      "sourceUrl": "https://tr.china-embassy.gov.cn/eng/zt/xjzzq/201204/t20120416_1432144.htm",
+      "noticeTitle": {
+        "zh": "China publishes names of six terrorists",
+        "en": "Third batch of MPS-designated persons"
+      },
+      "restrictions": {
+        "zh": "已核实该历史批次的官方列名。请先核对身份、最新认定及适用的资产冻结和反恐融资义务；不可据姓名相似直接作不利决定。未把历史资料自动标为截至今日仍然有效。",
+        "en": "Historical official designation verified. Confirm identity, the latest designation and applicable asset-freeze/counterterrorist-financing obligations. Name similarity alone does not establish identity. Historical inclusion is not automatically treated as currently effective."
+      },
+      "statusDate": "",
+      "statusUrl": "",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "历史认定；现状待复核",
+        "en": "Historical designation; current status requires review"
+      }
+    },
+    {
+      "id": "cn-official-mps-2012-person-4",
+      "sourceKey": "CN-MPS",
+      "name": "Tursunjan Ebibla",
+      "nameZh": "",
+      "aliases": [],
+      "type": "Person",
+      "status": "unknown",
+      "noticeDate": "2012-04-05",
+      "sourceUrl": "https://tr.china-embassy.gov.cn/eng/zt/xjzzq/201204/t20120416_1432144.htm",
+      "noticeTitle": {
+        "zh": "China publishes names of six terrorists",
+        "en": "Third batch of MPS-designated persons"
+      },
+      "restrictions": {
+        "zh": "已核实该历史批次的官方列名。请先核对身份、最新认定及适用的资产冻结和反恐融资义务；不可据姓名相似直接作不利决定。未把历史资料自动标为截至今日仍然有效。",
+        "en": "Historical official designation verified. Confirm identity, the latest designation and applicable asset-freeze/counterterrorist-financing obligations. Name similarity alone does not establish identity. Historical inclusion is not automatically treated as currently effective."
+      },
+      "statusDate": "",
+      "statusUrl": "",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "历史认定；现状待复核",
+        "en": "Historical designation; current status requires review"
+      }
+    },
+    {
+      "id": "cn-official-mps-2012-person-5",
+      "sourceKey": "CN-MPS",
+      "name": "Nurmemet Raxit",
+      "nameZh": "",
+      "aliases": [],
+      "type": "Person",
+      "status": "unknown",
+      "noticeDate": "2012-04-05",
+      "sourceUrl": "https://tr.china-embassy.gov.cn/eng/zt/xjzzq/201204/t20120416_1432144.htm",
+      "noticeTitle": {
+        "zh": "China publishes names of six terrorists",
+        "en": "Third batch of MPS-designated persons"
+      },
+      "restrictions": {
+        "zh": "已核实该历史批次的官方列名。请先核对身份、最新认定及适用的资产冻结和反恐融资义务；不可据姓名相似直接作不利决定。未把历史资料自动标为截至今日仍然有效。",
+        "en": "Historical official designation verified. Confirm identity, the latest designation and applicable asset-freeze/counterterrorist-financing obligations. Name similarity alone does not establish identity. Historical inclusion is not automatically treated as currently effective."
+      },
+      "statusDate": "",
+      "statusUrl": "",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "历史认定；现状待复核",
+        "en": "Historical designation; current status requires review"
+      }
+    },
+    {
+      "id": "cn-official-mps-2012-person-6",
+      "sourceKey": "CN-MPS",
+      "name": "Mamat Imin Nurmamat",
+      "nameZh": "",
+      "aliases": [],
+      "type": "Person",
+      "status": "unknown",
+      "noticeDate": "2012-04-05",
+      "sourceUrl": "https://tr.china-embassy.gov.cn/eng/zt/xjzzq/201204/t20120416_1432144.htm",
+      "noticeTitle": {
+        "zh": "China publishes names of six terrorists",
+        "en": "Third batch of MPS-designated persons"
+      },
+      "restrictions": {
+        "zh": "已核实该历史批次的官方列名。请先核对身份、最新认定及适用的资产冻结和反恐融资义务；不可据姓名相似直接作不利决定。未把历史资料自动标为截至今日仍然有效。",
+        "en": "Historical official designation verified. Confirm identity, the latest designation and applicable asset-freeze/counterterrorist-financing obligations. Name similarity alone does not establish identity. Historical inclusion is not automatically treated as currently effective."
+      },
+      "statusDate": "",
+      "statusUrl": "",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "历史认定；现状待复核",
+        "en": "Historical designation; current status requires review"
+      }
+    },
+    {
+      "id": "cn-official-blocking-2026-21-1",
+      "sourceKey": "CN-BLOCKING",
+      "name": "HENGLI PETROCHEMICAL DALIAN REFINERY CO., LTD.",
+      "nameZh": "恒力石化（大连）炼化有限公司",
+      "aliases": [],
+      "type": "Company",
+      "status": "blocking_notice",
+      "noticeDate": "2026-05-02",
+      "sourceUrl": "https://www.mofcom.gov.cn/zcfb/blgg/gg/2026/art/2026/art_00468f197e7447f5b8059b2e844e78b8.html",
+      "noticeTitle": {
+        "zh": "商务部公告2026年第21号阻断禁令",
+        "en": "MOFCOM Announcement No.21 of 2026: Blocking order"
+      },
+      "restrictions": {
+        "zh": "本条是中国阻断禁令涉及的受保护企业，不是“中国制裁对象”。公告禁止承认、执行、遵守美国依据第13902号、第13846号行政令等以参与伊朗石油交易为由施加的所述制裁。若同时命中美国名单，应保留两种法律制度下的结果，核对管辖连接点、具体措施、豁免/许可及冲突处理，提交法务审查；不可自动选择服从一方。",
+        "en": "This company is covered by a Chinese blocking order; it is not designated here as a target of Chinese sanctions. The notice prohibits recognizing, enforcing or complying with the specified U.S. sanctions imposed under Executive Orders 13902, 13846 and related provisions over Iranian oil dealings. If a U.S. list also matches, retain both results and obtain legal review of jurisdiction, the specific measures, exemptions/licenses and the legal conflict. Do not automatically select one regime to follow."
+      },
+      "statusDate": "2026-05-02",
+      "statusUrl": "https://www.mofcom.gov.cn/zcfb/blgg/gg/2026/art/2026/art_00468f197e7447f5b8059b2e844e78b8.html",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "阻断措施涉及企业",
+        "en": "Company covered by a blocking order"
+      },
+      "nameEnglishProvenance": "Exact English name present in the user-supplied consolidated.csv; Chinese designation text supplies the Chinese name.",
+      "notASanctionsTarget": true
+    },
+    {
+      "id": "cn-official-blocking-2026-21-2",
+      "sourceKey": "CN-BLOCKING",
+      "name": "SHANDONG SHOUGUANG LUQING PETROCHEMICAL CO., LTD.",
+      "nameZh": "山东寿光鲁清石化有限公司",
+      "aliases": [],
+      "type": "Company",
+      "status": "blocking_notice",
+      "noticeDate": "2026-05-02",
+      "sourceUrl": "https://www.mofcom.gov.cn/zcfb/blgg/gg/2026/art/2026/art_00468f197e7447f5b8059b2e844e78b8.html",
+      "noticeTitle": {
+        "zh": "商务部公告2026年第21号阻断禁令",
+        "en": "MOFCOM Announcement No.21 of 2026: Blocking order"
+      },
+      "restrictions": {
+        "zh": "本条是中国阻断禁令涉及的受保护企业，不是“中国制裁对象”。公告禁止承认、执行、遵守美国依据第13902号、第13846号行政令等以参与伊朗石油交易为由施加的所述制裁。若同时命中美国名单，应保留两种法律制度下的结果，核对管辖连接点、具体措施、豁免/许可及冲突处理，提交法务审查；不可自动选择服从一方。",
+        "en": "This company is covered by a Chinese blocking order; it is not designated here as a target of Chinese sanctions. The notice prohibits recognizing, enforcing or complying with the specified U.S. sanctions imposed under Executive Orders 13902, 13846 and related provisions over Iranian oil dealings. If a U.S. list also matches, retain both results and obtain legal review of jurisdiction, the specific measures, exemptions/licenses and the legal conflict. Do not automatically select one regime to follow."
+      },
+      "statusDate": "2026-05-02",
+      "statusUrl": "https://www.mofcom.gov.cn/zcfb/blgg/gg/2026/art/2026/art_00468f197e7447f5b8059b2e844e78b8.html",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "阻断措施涉及企业",
+        "en": "Company covered by a blocking order"
+      },
+      "nameEnglishProvenance": "Exact English name present in the user-supplied consolidated.csv; Chinese designation text supplies the Chinese name.",
+      "notASanctionsTarget": true
+    },
+    {
+      "id": "cn-official-blocking-2026-21-3",
+      "sourceKey": "CN-BLOCKING",
+      "name": "SHANDONG JINCHENG PETROCHEMICAL GROUP CO., LTD.",
+      "nameZh": "山东金诚石化集团有限公司",
+      "aliases": [],
+      "type": "Company",
+      "status": "blocking_notice",
+      "noticeDate": "2026-05-02",
+      "sourceUrl": "https://www.mofcom.gov.cn/zcfb/blgg/gg/2026/art/2026/art_00468f197e7447f5b8059b2e844e78b8.html",
+      "noticeTitle": {
+        "zh": "商务部公告2026年第21号阻断禁令",
+        "en": "MOFCOM Announcement No.21 of 2026: Blocking order"
+      },
+      "restrictions": {
+        "zh": "本条是中国阻断禁令涉及的受保护企业，不是“中国制裁对象”。公告禁止承认、执行、遵守美国依据第13902号、第13846号行政令等以参与伊朗石油交易为由施加的所述制裁。若同时命中美国名单，应保留两种法律制度下的结果，核对管辖连接点、具体措施、豁免/许可及冲突处理，提交法务审查；不可自动选择服从一方。",
+        "en": "This company is covered by a Chinese blocking order; it is not designated here as a target of Chinese sanctions. The notice prohibits recognizing, enforcing or complying with the specified U.S. sanctions imposed under Executive Orders 13902, 13846 and related provisions over Iranian oil dealings. If a U.S. list also matches, retain both results and obtain legal review of jurisdiction, the specific measures, exemptions/licenses and the legal conflict. Do not automatically select one regime to follow."
+      },
+      "statusDate": "2026-05-02",
+      "statusUrl": "https://www.mofcom.gov.cn/zcfb/blgg/gg/2026/art/2026/art_00468f197e7447f5b8059b2e844e78b8.html",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "阻断措施涉及企业",
+        "en": "Company covered by a blocking order"
+      },
+      "nameEnglishProvenance": "Exact English name present in the user-supplied consolidated.csv; Chinese designation text supplies the Chinese name.",
+      "notASanctionsTarget": true
+    },
+    {
+      "id": "cn-official-blocking-2026-21-4",
+      "sourceKey": "CN-BLOCKING",
+      "name": "HEBEI XINHAI CHEMICAL GROUP CO., LTD.",
+      "nameZh": "河北鑫海化工集团有限公司",
+      "aliases": [],
+      "type": "Company",
+      "status": "blocking_notice",
+      "noticeDate": "2026-05-02",
+      "sourceUrl": "https://www.mofcom.gov.cn/zcfb/blgg/gg/2026/art/2026/art_00468f197e7447f5b8059b2e844e78b8.html",
+      "noticeTitle": {
+        "zh": "商务部公告2026年第21号阻断禁令",
+        "en": "MOFCOM Announcement No.21 of 2026: Blocking order"
+      },
+      "restrictions": {
+        "zh": "本条是中国阻断禁令涉及的受保护企业，不是“中国制裁对象”。公告禁止承认、执行、遵守美国依据第13902号、第13846号行政令等以参与伊朗石油交易为由施加的所述制裁。若同时命中美国名单，应保留两种法律制度下的结果，核对管辖连接点、具体措施、豁免/许可及冲突处理，提交法务审查；不可自动选择服从一方。",
+        "en": "This company is covered by a Chinese blocking order; it is not designated here as a target of Chinese sanctions. The notice prohibits recognizing, enforcing or complying with the specified U.S. sanctions imposed under Executive Orders 13902, 13846 and related provisions over Iranian oil dealings. If a U.S. list also matches, retain both results and obtain legal review of jurisdiction, the specific measures, exemptions/licenses and the legal conflict. Do not automatically select one regime to follow."
+      },
+      "statusDate": "2026-05-02",
+      "statusUrl": "https://www.mofcom.gov.cn/zcfb/blgg/gg/2026/art/2026/art_00468f197e7447f5b8059b2e844e78b8.html",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "阻断措施涉及企业",
+        "en": "Company covered by a blocking order"
+      },
+      "nameEnglishProvenance": "Exact English name present in the user-supplied consolidated.csv; Chinese designation text supplies the Chinese name.",
+      "notASanctionsTarget": true
+    },
+    {
+      "id": "cn-official-blocking-2026-21-5",
+      "sourceKey": "CN-BLOCKING",
+      "name": "SHANDONG SHENGXING CHEMICAL CO., LTD.",
+      "nameZh": "山东胜星化工有限公司",
+      "aliases": [],
+      "type": "Company",
+      "status": "blocking_notice",
+      "noticeDate": "2026-05-02",
+      "sourceUrl": "https://www.mofcom.gov.cn/zcfb/blgg/gg/2026/art/2026/art_00468f197e7447f5b8059b2e844e78b8.html",
+      "noticeTitle": {
+        "zh": "商务部公告2026年第21号阻断禁令",
+        "en": "MOFCOM Announcement No.21 of 2026: Blocking order"
+      },
+      "restrictions": {
+        "zh": "本条是中国阻断禁令涉及的受保护企业，不是“中国制裁对象”。公告禁止承认、执行、遵守美国依据第13902号、第13846号行政令等以参与伊朗石油交易为由施加的所述制裁。若同时命中美国名单，应保留两种法律制度下的结果，核对管辖连接点、具体措施、豁免/许可及冲突处理，提交法务审查；不可自动选择服从一方。",
+        "en": "This company is covered by a Chinese blocking order; it is not designated here as a target of Chinese sanctions. The notice prohibits recognizing, enforcing or complying with the specified U.S. sanctions imposed under Executive Orders 13902, 13846 and related provisions over Iranian oil dealings. If a U.S. list also matches, retain both results and obtain legal review of jurisdiction, the specific measures, exemptions/licenses and the legal conflict. Do not automatically select one regime to follow."
+      },
+      "statusDate": "2026-05-02",
+      "statusUrl": "https://www.mofcom.gov.cn/zcfb/blgg/gg/2026/art/2026/art_00468f197e7447f5b8059b2e844e78b8.html",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "statusLabel": {
+        "zh": "阻断措施涉及企业",
+        "en": "Company covered by a blocking order"
+      },
+      "nameEnglishProvenance": "Exact English name present in the user-supplied consolidated.csv; Chinese designation text supplies the Chinese name.",
+      "notASanctionsTarget": true
+    },
+    {
+      "id": "cn-official-ep-review-1",
+      "sourceKey": "CN-MFA",
+      "name": "Reinhard Bütikofer",
+      "nameZh": "彼蒂科菲尔",
+      "aliases": [],
+      "type": "Person",
+      "status": "changed_review_required",
+      "noticeDate": "2021-03-22",
+      "sourceUrl": "https://www.fmprc.gov.cn/fyrbt_673021/202505/t20250506_11616274.shtml",
+      "noticeTitle": {
+        "zh": "2025年5月6日外交部发言人例行记者会",
+        "en": "MFA statement on lifting reciprocal restrictions on parliamentary exchanges"
+      },
+      "restrictions": {
+        "zh": "原始上传保留2021年历史制裁，但未记录2025年中方与欧洲议会同步全面取消相互交往限制的官方表态。此处补充状态变化线索；该表态未逐项列明人员、机构及所有措施的撤销范围，不能把它处理成全面解除制裁证明。开展交易、入境或任职安排前，应结合最新正式材料确认具体适用状态。",
+        "en": "The upload retains a 2021 historical sanctions record but omits the 2025 official statement that China and the European Parliament would comprehensively lift reciprocal restrictions on exchanges. This supplement flags that change. The statement is not an itemized cancellation of every measure for every person or body; confirm the applicable current position before relying on the historical record."
+      },
+      "statusDate": "2025-05-06",
+      "statusUrl": "https://www.fmprc.gov.cn/fyrbt_673021/202505/t20250506_11616274.shtml",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "correctionOf": {
+        "dataset": "cn-sanctions-upload-20261019",
+        "uploadRow": 41,
+        "matchName": "Reinhard Bütikofer",
+        "matchDate": "22.03.21"
+      },
+      "statusLabel": {
+        "zh": "后续状态变化需核对",
+        "en": "Subsequent status change requires review"
+      }
+    },
+    {
+      "id": "cn-official-ep-review-2",
+      "sourceKey": "CN-MFA",
+      "name": "Michael Gahler",
+      "nameZh": "盖勒",
+      "aliases": [],
+      "type": "Person",
+      "status": "changed_review_required",
+      "noticeDate": "2021-03-22",
+      "sourceUrl": "https://www.fmprc.gov.cn/fyrbt_673021/202505/t20250506_11616274.shtml",
+      "noticeTitle": {
+        "zh": "2025年5月6日外交部发言人例行记者会",
+        "en": "MFA statement on lifting reciprocal restrictions on parliamentary exchanges"
+      },
+      "restrictions": {
+        "zh": "原始上传保留2021年历史制裁，但未记录2025年中方与欧洲议会同步全面取消相互交往限制的官方表态。此处补充状态变化线索；该表态未逐项列明人员、机构及所有措施的撤销范围，不能把它处理成全面解除制裁证明。开展交易、入境或任职安排前，应结合最新正式材料确认具体适用状态。",
+        "en": "The upload retains a 2021 historical sanctions record but omits the 2025 official statement that China and the European Parliament would comprehensively lift reciprocal restrictions on exchanges. This supplement flags that change. The statement is not an itemized cancellation of every measure for every person or body; confirm the applicable current position before relying on the historical record."
+      },
+      "statusDate": "2025-05-06",
+      "statusUrl": "https://www.fmprc.gov.cn/fyrbt_673021/202505/t20250506_11616274.shtml",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "correctionOf": {
+        "dataset": "cn-sanctions-upload-20261019",
+        "uploadRow": 37,
+        "matchName": "Michael Gahler",
+        "matchDate": "22.03.21"
+      },
+      "statusLabel": {
+        "zh": "后续状态变化需核对",
+        "en": "Subsequent status change requires review"
+      }
+    },
+    {
+      "id": "cn-official-ep-review-3",
+      "sourceKey": "CN-MFA",
+      "name": "Miriam Lexmann",
+      "nameZh": "莱克斯曼",
+      "aliases": [],
+      "type": "Person",
+      "status": "changed_review_required",
+      "noticeDate": "2021-03-22",
+      "sourceUrl": "https://www.fmprc.gov.cn/fyrbt_673021/202505/t20250506_11616274.shtml",
+      "noticeTitle": {
+        "zh": "2025年5月6日外交部发言人例行记者会",
+        "en": "MFA statement on lifting reciprocal restrictions on parliamentary exchanges"
+      },
+      "restrictions": {
+        "zh": "原始上传保留2021年历史制裁，但未记录2025年中方与欧洲议会同步全面取消相互交往限制的官方表态。此处补充状态变化线索；该表态未逐项列明人员、机构及所有措施的撤销范围，不能把它处理成全面解除制裁证明。开展交易、入境或任职安排前，应结合最新正式材料确认具体适用状态。",
+        "en": "The upload retains a 2021 historical sanctions record but omits the 2025 official statement that China and the European Parliament would comprehensively lift reciprocal restrictions on exchanges. This supplement flags that change. The statement is not an itemized cancellation of every measure for every person or body; confirm the applicable current position before relying on the historical record."
+      },
+      "statusDate": "2025-05-06",
+      "statusUrl": "https://www.fmprc.gov.cn/fyrbt_673021/202505/t20250506_11616274.shtml",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "correctionOf": {
+        "dataset": "cn-sanctions-upload-20261019",
+        "uploadRow": 38,
+        "matchName": "Miriam Lexmann",
+        "matchDate": "22.03.21"
+      },
+      "statusLabel": {
+        "zh": "后续状态变化需核对",
+        "en": "Subsequent status change requires review"
+      }
+    },
+    {
+      "id": "cn-official-ep-review-4",
+      "sourceKey": "CN-MFA",
+      "name": "Raphaël Glucksmann",
+      "nameZh": "格鲁克斯曼",
+      "aliases": [],
+      "type": "Person",
+      "status": "changed_review_required",
+      "noticeDate": "2021-03-22",
+      "sourceUrl": "https://www.fmprc.gov.cn/fyrbt_673021/202505/t20250506_11616274.shtml",
+      "noticeTitle": {
+        "zh": "2025年5月6日外交部发言人例行记者会",
+        "en": "MFA statement on lifting reciprocal restrictions on parliamentary exchanges"
+      },
+      "restrictions": {
+        "zh": "原始上传保留2021年历史制裁，但未记录2025年中方与欧洲议会同步全面取消相互交往限制的官方表态。此处补充状态变化线索；该表态未逐项列明人员、机构及所有措施的撤销范围，不能把它处理成全面解除制裁证明。开展交易、入境或任职安排前，应结合最新正式材料确认具体适用状态。",
+        "en": "The upload retains a 2021 historical sanctions record but omits the 2025 official statement that China and the European Parliament would comprehensively lift reciprocal restrictions on exchanges. This supplement flags that change. The statement is not an itemized cancellation of every measure for every person or body; confirm the applicable current position before relying on the historical record."
+      },
+      "statusDate": "2025-05-06",
+      "statusUrl": "https://www.fmprc.gov.cn/fyrbt_673021/202505/t20250506_11616274.shtml",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "correctionOf": {
+        "dataset": "cn-sanctions-upload-20261019",
+        "uploadRow": 40,
+        "matchName": "Raphaël Glucksmann",
+        "matchDate": "22.03.21"
+      },
+      "statusLabel": {
+        "zh": "后续状态变化需核对",
+        "en": "Subsequent status change requires review"
+      }
+    },
+    {
+      "id": "cn-official-ep-review-5",
+      "sourceKey": "CN-MFA",
+      "name": "Ilhan Kyuchyuk",
+      "nameZh": "库楚克",
+      "aliases": [],
+      "type": "Person",
+      "status": "changed_review_required",
+      "noticeDate": "2021-03-22",
+      "sourceUrl": "https://www.fmprc.gov.cn/fyrbt_673021/202505/t20250506_11616274.shtml",
+      "noticeTitle": {
+        "zh": "2025年5月6日外交部发言人例行记者会",
+        "en": "MFA statement on lifting reciprocal restrictions on parliamentary exchanges"
+      },
+      "restrictions": {
+        "zh": "原始上传保留2021年历史制裁，但未记录2025年中方与欧洲议会同步全面取消相互交往限制的官方表态。此处补充状态变化线索；该表态未逐项列明人员、机构及所有措施的撤销范围，不能把它处理成全面解除制裁证明。开展交易、入境或任职安排前，应结合最新正式材料确认具体适用状态。",
+        "en": "The upload retains a 2021 historical sanctions record but omits the 2025 official statement that China and the European Parliament would comprehensively lift reciprocal restrictions on exchanges. This supplement flags that change. The statement is not an itemized cancellation of every measure for every person or body; confirm the applicable current position before relying on the historical record."
+      },
+      "statusDate": "2025-05-06",
+      "statusUrl": "https://www.fmprc.gov.cn/fyrbt_673021/202505/t20250506_11616274.shtml",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "correctionOf": {
+        "dataset": "cn-sanctions-upload-20261019",
+        "uploadRow": 35,
+        "matchName": "Ilhan Kyuchyuk",
+        "matchDate": "22.03.21"
+      },
+      "statusLabel": {
+        "zh": "后续状态变化需核对",
+        "en": "Subsequent status change requires review"
+      }
+    },
+    {
+      "id": "cn-official-ep-review-6",
+      "sourceKey": "CN-MFA",
+      "name": "Subcommittee on Human Rights of the European Parliament",
+      "nameZh": "欧洲议会人权分委会",
+      "aliases": [],
+      "type": "Organization",
+      "status": "changed_review_required",
+      "noticeDate": "2021-03-22",
+      "sourceUrl": "https://www.fmprc.gov.cn/fyrbt_673021/202505/t20250506_11616274.shtml",
+      "noticeTitle": {
+        "zh": "2025年5月6日外交部发言人例行记者会",
+        "en": "MFA statement on lifting reciprocal restrictions on parliamentary exchanges"
+      },
+      "restrictions": {
+        "zh": "原始上传保留2021年历史制裁，但未记录2025年中方与欧洲议会同步全面取消相互交往限制的官方表态。此处补充状态变化线索；该表态未逐项列明人员、机构及所有措施的撤销范围，不能把它处理成全面解除制裁证明。开展交易、入境或任职安排前，应结合最新正式材料确认具体适用状态。",
+        "en": "The upload retains a 2021 historical sanctions record but omits the 2025 official statement that China and the European Parliament would comprehensively lift reciprocal restrictions on exchanges. This supplement flags that change. The statement is not an itemized cancellation of every measure for every person or body; confirm the applicable current position before relying on the historical record."
+      },
+      "statusDate": "2025-05-06",
+      "statusUrl": "https://www.fmprc.gov.cn/fyrbt_673021/202505/t20250506_11616274.shtml",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "correctionOf": {
+        "dataset": "cn-sanctions-upload-20261019",
+        "uploadRow": 44,
+        "matchName": "Subcommittee on Human Rights of the European Parliament",
+        "matchDate": "22.03.21"
+      },
+      "statusLabel": {
+        "zh": "后续状态变化需核对",
+        "en": "Subsequent status change requires review"
+      }
+    },
+    {
+      "id": "cn-official-skyla-measures-ended",
+      "sourceKey": "CN-TAO",
+      "name": "Skyla",
+      "nameZh": "天亮医疗",
+      "aliases": [],
+      "type": "Company",
+      "status": "measures_ended",
+      "noticeDate": "2022-08-03",
+      "sourceUrl": "https://www.gwytb.gov.cn/xwdt/xwfb/wyly/202307/t20230713_12550405.htm",
+      "noticeTitle": {
+        "zh": "国台办发言人就惩戒“台独”顽固分子关联企业答记者问",
+        "en": "Taiwan Affairs Office statement ending specified measures against Skyla"
+      },
+      "restrictions": {
+        "zh": "国台办2023年7月13日宣布，即日起不再对天亮医疗采取禁止大陆组织、企业、个人与其交易合作及禁止负责人入境等措施；该表态同时说明其他三家企业的惩戒措施保持不变。只更新本措施，不据此撤销其他可能适用的独立措施。",
+        "en": "On July 13, 2023, the Taiwan Affairs Office announced that the stated transaction/cooperation and responsible-person entry measures would no longer apply to Skyla. The same statement retained measures against the other three companies. This ends the specified measures only and does not cancel any separate applicable measure."
+      },
+      "statusDate": "2023-07-13",
+      "statusUrl": "https://www.gwytb.gov.cn/xwdt/xwfb/wyly/202307/t20230713_12550405.htm",
+      "evidenceQuote": "",
+      "verifiedAt": "2026-10-19",
+      "verification": "Official notice/history verified; not an ongoing freshness guarantee",
+      "correctionOf": {
+        "dataset": "cn-sanctions-upload-20261019",
+        "uploadRow": 81,
+        "matchName": "Skyla",
+        "matchDate": "03.08.22"
+      },
+      "statusLabel": {
+        "zh": "所列措施已停止",
+        "en": "Specified measures ended"
+      }
+    }
+  ]
+}
