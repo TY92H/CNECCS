@@ -1,23 +1,23 @@
 {
   "schemaVersion": 1,
-  "appVersion": "0.6.1",
+  "appVersion": "0.7.0",
   "deploymentTarget": "github-pages",
-  "sourceBuildManifestSha256": "5feb240c2390d76d0019cb418f0d52c5d818ba5ddef34d4392dd0726c858e139",
+  "sourceBuildManifestSha256": "2744bc90050db25798e7d017d2f9ecbf1a10d6129a4923e8f4b3d7817fef0761",
   "adaptations": [
     "Add supported CSP meta before resources",
     "Omit Cloudflare-only _headers",
     "Add .nojekyll",
     "Replace build manifest with hashes of actual deployment files"
   ],
-  "meaning": "File integrity only; not proof of browser acceptance, legal currency, or a live deployment.",
+  "meaning": "File integrity only; not proof of legal currency or a live deployment.",
   "files": {
     ".nojekyll": {
       "bytes": 0,
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     "app.js": {
-      "bytes": 83741,
-      "sha256": "d3a729d9a3e812ff3e18f0b83ee4550c0288aea0d30a15debe8c2d3e64231c69"
+      "bytes": 86376,
+      "sha256": "4b76296dc66d278102c233ad921cc63ee957fbffc4a7a7535dd202a1a0045ec4"
     },
     "assets/logo.png": {
       "bytes": 838061,
@@ -44,8 +44,8 @@
       "sha256": "f1e3b469cdc732beb3210ae6f2638849c2d48a69e150b6a098920700687ef3a9"
     },
     "build-info.json": {
-      "bytes": 331,
-      "sha256": "e96013d39689135c1e6c8a44692e4cfaceb7d81b732d4fe557cb465a6d9e9e40"
+      "bytes": 489,
+      "sha256": "14cf06810babebd8bdd5805ebd340be4f03ce860ba1040930011807eea768295"
     },
     "corpus-loader.js": {
       "bytes": 108537,
@@ -100,8 +100,8 @@
       "sha256": "b44882d67e63c54cfb98c7161ce5401c7d004a533a874d6b1cf3b16674d38713"
     },
     "index.html": {
-      "bytes": 7781,
-      "sha256": "04bc8c3933e8782bad78ebd6df65366e0a2fa1cb54f54d4afcd158bad92d09c5"
+      "bytes": 7780,
+      "sha256": "00c0b36f58f4830a6e89c4ad624a006ba7f95573de15aa8a1f2cb8192a91284b"
     },
     "reference-details-cn-00.01d6886273970c44.json": {
       "bytes": 739942,
@@ -220,8 +220,8 @@
       "sha256": "ab57304d41a6c424f3474847f592c4aa01a4c37301931fe42959e0aecc78e5fb"
     },
     "runtime.js": {
-      "bytes": 322630,
-      "sha256": "aef68ce3ded91522f06e1d094e2b812cd3025713db3ea1fec7d39771602bcd48"
+      "bytes": 887149,
+      "sha256": "f4ffd1030f6f81399026b05e63b4940d7cfc178f6642c73c1f0815604b669b4b"
     },
     "search.js": {
       "bytes": 41246,
@@ -241,11 +241,19 @@
     },
     "startup.js": {
       "bytes": 125438,
-      "sha256": "00d1190d3a2e49a2d81d005c0e9905e9a084e27678cf7c8a1e5d951775906051"
+      "sha256": "5e49f9421477dfa556371b436541e86663f2ec369b6ef7fc82e6405f931a614b"
     },
     "styles.css": {
-      "bytes": 48874,
-      "sha256": "cf27ce48be81c5806b4e438a19e0c1667832fefe66b513adef6d2952338675ad"
+      "bytes": 53891,
+      "sha256": "94e9cf4bc74e4e9f6f62135695998436d608532fe264df08b2cd0e8c0fc17f1d"
+    },
+    "technology-catalogue.json": {
+      "bytes": 627415,
+      "sha256": "c54f3ece67ed38a26a5b90d1333eb6118e0d69dd2e7cb19227b52856c48e5961"
+    },
+    "technology.js": {
+      "bytes": 37345,
+      "sha256": "09f80dc07aaf27b10c021fde3d72ea8c0b4aa368061e3c27640001acc33be071"
     },
     "vendor/pdfjs/LICENSE": {
       "bytes": 10174,

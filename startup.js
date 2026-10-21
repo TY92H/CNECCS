@@ -1,4 +1,4 @@
-window.CNECCS_APP_VERSION="0.6.1";
+window.CNECCS_APP_VERSION="0.7.0";
 /* Public reference assets only: no searches, uploads or personal data enter this cache. */
 (function (root) {
   'use strict';

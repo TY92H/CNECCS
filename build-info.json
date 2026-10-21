@@ -1,5 +1,5 @@
 {
-  "appVersion": "0.6.1",
+  "appVersion": "0.7.0",
   "contentVersion": "2026-10-19-workbook-v1",
   "productRecords": 2399,
   "chinaListingRecords": 667,
@@ -9,5 +9,11 @@
   "analytics": false,
   "externalAI": false,
   "automaticUpdates": false,
-  "sourceVerificationDate": "2026-10-19"
+  "sourceVerificationDate": "2026-10-19",
+  "technologyCatalogue": {
+    "current": 132,
+    "historical": 3,
+    "sourceVerificationDate": "2026-10-21",
+    "referenceTranslation": "unofficial"
+  }
 }
