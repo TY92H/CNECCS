@@ -2,7 +2,7 @@
 (function (root) {
 'use strict';
 const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const state = {lang:'zh',regime:'CN',query:'',name:'',address:'',identifier:'',source:'all',type:'all',status:'all',fuzzy:true,advanced:false,offset:0,result:null,detail:null,batch:null,batchScope:null,batchProgress:null,error:null};
+const state = {lang:'zh',regime:'CN',query:'',name:'',address:'',identifier:'',source:'all',type:'all',status:'all',fuzzy:true,advanced:false,offset:0,result:null,detail:null,batch:null,batchScope:null,batchProgress:null,error:null,pending:false};
 const bundles = {}, indexes = {}, loading = {};
 let callbacks = {}, operation = 0, pendingBatchInputs = null;
 const t = (zh,en) => state.lang === 'zh' ? zh : en;
@@ -17,39 +17,71 @@ const button = (text,action,cls='secondary',attrs='') => '<button type="button" 
 const safe = value => {try{const u = new URL(value);return ['https:','http:'].includes(u.protocol)?u.href:'#';}catch{return '#';}};
 const rerender = () => callbacks.rerender && callbacks.rerender();
 function configure(options) {callbacks = options || {};}
-async function getJSON(path, embedded) {
- if (embedded) return embedded;
- const response = await fetch(path, {credentials:'omit',referrerPolicy:'no-referrer'});
- if (!response.ok) throw Error('Reference data unavailable');
- return response.json();
+const LOAD_BUDGET = 12500;
+function referenceError(code,message){const error=new Error(message);error.code=code;return error;}
+function boundedLoad(work){
+ const controller=typeof root.AbortController==='function'?new root.AbortController():null;
+ const attempt={active:true,deadline:clock()+LOAD_BUDGET,signal:controller?.signal};
+ attempt.check=()=>{if(!attempt.active||clock()>=attempt.deadline)throw referenceError('PARTY_TIMEOUT','Party reference loading exceeded 12.5 seconds');};
+ let timer;
+ const timeout=new Promise((_,reject)=>{timer=setTimeout(()=>{attempt.active=false;controller?.abort();reject(referenceError('PARTY_TIMEOUT','Party reference loading exceeded 12.5 seconds'));},LOAD_BUDGET);});
+ const task=Promise.resolve().then(()=>work(attempt));
+ return Promise.race([task,timeout]).finally(()=>{attempt.active=false;root.clearTimeout?.(timer);controller?.abort();});
+}
+async function getJSON(path, embedded, attempt) {
+ attempt.check();if(embedded)return embedded;
+ for(let tries=0;tries<2;tries++){
+  try{
+   const response=await fetch(path,{credentials:'omit',referrerPolicy:'no-referrer',...(attempt.signal?{signal:attempt.signal}:{})});
+   attempt.check();
+   if(!response.ok){const error=referenceError('PARTY_HTTP','Reference HTTP '+response.status);error.transient=response.status===429||response.status>=500;throw error;}
+   const value=await response.json();attempt.check();return value;
+  }catch(error){
+   attempt.check();
+   const transient=error.transient===true||(!error.code&&error.name!=='SyntaxError'&&error.name!=='AbortError');
+   if(tries===0&&transient){await yieldWork();continue;}
+   if(!error.code)error.code=error.name==='SyntaxError'?'PARTY_INVALID':'PARTY_NETWORK';throw error;
+  }
+ }
 }
 function requireTable(data, required){if(!data||!Array.isArray(data.columns)||!Array.isArray(data.rows)||required.some(key=>!data.columns.includes(key))||data.rows.some(row=>!Array.isArray(row)||row.length!==data.columns.length))throw Error('Invalid reference table');return data;}
 function requireRecords(data){if(!data||!Array.isArray(data.records)||data.records.some(record=>!record||typeof record!=='object'||Array.isArray(record)))throw Error('Invalid reference records');return data;}
-async function ensure(regime) {
- if (indexes[regime]) return indexes[regime];
- if (loading[regime]) return loading[regime];
- loading[regime] = (async()=>{
-  const embedded = root.CNECCS_ENTITY_DATA || {};
-  if (regime === 'US') bundles.us = requireTable(await getJSON('data/us-entities-official.json',embedded.us),['_id','source','name']);
-  else {
-   const values = await Promise.all([getJSON('data/cn-entities-upload.json',embedded.cnUpload),getJSON('data/cn-entities-official-additions.json',embedded.cnOfficial),embedded.cnOfficial?Promise.resolve(null):getJSON('data/cn-entities-extra.json',embedded.cnExtra),getJSON('data/un-entities-auxiliary.json',embedded.unAux)]);
-   requireTable(values[0],['Type','Name']);requireRecords(values[1]);if(values[2])requireRecords(values[2]);requireRecords(values[3]);
-   bundles.cnUpload=values[0];bundles.cnOfficial=values[2]?{metadata:{...values[1].metadata,extra:values[2].metadata},records:[...(values[1].records||[]),...(values[2].records||[])]}:values[1];bundles.unAux=values[3];
+function scopeReady(regime=state.regime,source=state.source){return !!indexes[regime]&&(regime!=='CN'||source!=='CN-UN'||!!bundles.unAux);}
+function loadKey(regime,source){return regime==='CN'&&source==='CN-UN'?'CN-UN':regime;}
+async function ensure(regime,source='all') {
+ if(!['CN','US'].includes(regime))throw referenceError('PARTY_REGIME','Unknown party regime');
+ if(scopeReady(regime,source))return indexes[regime];
+ const key=loadKey(regime,source);if(loading[key])return loading[key];
+ const task=boundedLoad(async attempt=>{
+  const embedded=root.CNECCS_ENTITY_DATA||{};let prepared;
+  if(regime==='US')prepared={us:requireTable(await getJSON('data/us-entities-official.json',embedded.us,attempt),['_id','source','name'])};
+  else if(source==='CN-UN'&&!embedded.unAux){
+   // The auxiliary source never blocks normal China screening.
+   await ensure('CN');attempt.check();
+   prepared={cnUpload:bundles.cnUpload,cnOfficial:bundles.cnOfficial,unAux:requireRecords(await getJSON('data/un-entities-auxiliary.json',null,attempt))};
+  }else{
+   const values=await Promise.all([getJSON('data/cn-entities-upload.json',embedded.cnUpload,attempt),getJSON('data/cn-entities-official-additions.json',embedded.cnOfficial,attempt),embedded.cnOfficial?Promise.resolve(null):getJSON('data/cn-entities-extra.json',embedded.cnExtra,attempt)]);
+   requireTable(values[0],['Type','Name']);requireRecords(values[1]);if(values[2])requireRecords(values[2]);
+   prepared={cnUpload:values[0],cnOfficial:values[2]?{metadata:{...values[1].metadata,extra:values[2].metadata},records:[...values[1].records,...values[2].records]}:values[1]};
+   if(embedded.unAux)prepared.unAux=requireRecords(embedded.unAux);
   }
-  indexes[regime]=E().createIndex(regime==='US'?{us:bundles.us}:{cnUpload:bundles.cnUpload,cnOfficial:bundles.cnOfficial,unAux:bundles.unAux});
-  return indexes[regime];
- })();
- try {return await loading[regime];} finally {delete loading[regime];}
+  attempt.check();const index=E().createIndex(prepared);attempt.check();return {index,prepared};
+ }).then(({index,prepared})=>{Object.assign(bundles,prepared);indexes[regime]=index;return index;}).finally(()=>{if(loading[key]===task)delete loading[key];});
+ loading[key]=task;return task;
 }
+function loadMessage(error){const code=error?.code||'PARTY_INVALID';return {kind:'load',code,
+ zh:code==='PARTY_TIMEOUT'?'本次名单准备已达到 12.5 秒，已停止等待。输入内容已保留，请重试。':code==='PARTY_INVALID'?'名单文件暂时无法读取。输入内容已保留，请重试；持续失败时请反馈此问题。':'所选名单暂时未能载入。输入内容已保留，请重试。',
+ en:code==='PARTY_TIMEOUT'?'List preparation reached the 12.5-second limit. Waiting has stopped and your input is preserved. Please retry.':code==='PARTY_INVALID'?'The list file could not be read. Your input is preserved. Retry, and report the issue if it persists.':'The selected list could not load. Your input is preserved. Please retry.'};}
+function sourcesFor(index){const values=index?E().search(index,{regime:state.regime,limit:1}).facets.sources.slice():[];if(state.regime==='CN'&&index&&!values.some(x=>x.key==='CN-UN'))values.push({key:'CN-UN',label:{zh:'联合国辅助核对（选用时载入）',en:'UN auxiliary screening (loads when selected)'},count:null});return values;}
 function reset(regime) {
  operation++;pendingBatchInputs=null;
- Object.assign(state,{regime,source:'all',type:'all',status:'all',offset:0,result:null,detail:null,batch:null,batchScope:null,batchProgress:null,error:null});
+ Object.assign(state,{regime,source:'all',type:'all',status:'all',offset:0,result:null,detail:null,batch:null,batchScope:null,batchProgress:null,error:null,pending:false});
 }
 function input(name,label,placeholder='') {
  return '<label class="entity-field"><span>'+esc(label)+'</span><input id="entity-'+name+'" data-ent-field="'+name+'" value="'+esc(state[name])+'" maxlength="500" autocomplete="off" spellcheck="false" placeholder="'+esc(placeholder)+'"></label>';
 }
 function options(key,values,all) {
- return '<label class="entity-filter"><span>'+esc({source:t('名单来源','List source'),type:t('主体类型','Party type'),status:t('记录状态','Record status')}[key])+'</span><select id="entity-filter-'+key+'" data-ent-filter="'+key+'"><option value="all">'+esc(all)+'</option>'+values.map(x=>'<option value="'+esc(x.key)+'" '+(state[key]===x.key?'selected':'')+'>'+esc(L(x.label))+' · '+x.count+'</option>').join('')+'</select></label>';
+ return '<label class="entity-filter"><span>'+esc({source:t('名单来源','List source'),type:t('主体类型','Party type'),status:t('记录状态','Record status')}[key])+'</span><select id="entity-filter-'+key+'" data-ent-filter="'+key+'"><option value="all">'+esc(all)+'</option>'+values.map(x=>'<option value="'+esc(x.key)+'" '+(state[key]===x.key?'selected':'')+'>'+esc(L(x.label))+(x.count==null?'':' · '+x.count)+'</option>').join('')+'</select></label>';
 }
 function sourceName(key) {
  const sources=E().sources(state.regime);const source=Array.isArray(sources)?sources.find(s=>s.key===key):sources[key];
@@ -58,19 +90,19 @@ function sourceName(key) {
 function regimeTabs(){return '<div class="regime-tabs" role="group" aria-label="'+t('选择管制制度','Choose a legal regime')+'">'+['CN','US'].map(r=>'<button type="button" class="regime-tab '+(state.regime===r?'active':'')+'" data-action="regime" data-value="'+r+'" aria-pressed="'+(state.regime===r)+'">'+esc(r==='CN'?t('中国制度','China'):t('美国制度','United States'))+'</button>').join('')+'</div>';}
 function render(props) {
  state.lang=props.lang; if(state.regime!==props.regime)reset(props.regime);
- if(!indexes[state.regime]&&!loading[state.regime]&&(!state.error||state.error.kind==='input')){const requestedRegime=state.regime;ensure(requestedRegime).then(()=>{if(state.regime===requestedRegime)rerender();}).catch(()=>{if(state.regime!==requestedRegime)return;state.error={zh:'名单文件未能载入。请重试，或打开完整的独立 HTML 文件。',en:'The list files could not load. Retry or open the complete standalone HTML file.'};rerender();});}
+ if(!scopeReady()&&!loading[loadKey(state.regime,state.source)]&&(!state.error||state.error.kind==='input')){const requestedRegime=state.regime,requestedSource=state.source;ensure(requestedRegime,requestedSource).then(()=>{if(state.regime===requestedRegime&&state.source===requestedSource)rerender();}).catch(error=>{if(state.regime!==requestedRegime||state.source!==requestedSource)return;state.error=loadMessage(error);state.pending=false;rerender();});}
  if(state.detail&&indexes[state.regime])return detailPage();
  const index=indexes[state.regime];
- const facets=index?E().search(index,{regime:state.regime,limit:1}).facets:{sources:[],types:[],statuses:[]};
+ const facets=index?{...E().search(index,{regime:state.regime,limit:1}).facets,sources:sourcesFor(index)}:{sources:[],types:[],statuses:[]};
  return '<section class="page-heading"><div><div class="eyebrow">'+t('核对身份 · 查明措施','Verify identity · Review measures')+'</div><h1>'+t('主体与限制措施查询','Party and restrictions screening')+'</h1><p>'+t('按名称、地址或识别号查找列示记录，核对身份后再判断具体措施。','Find listing records by name, address, or identifier. Verify the identity before evaluating the measures.')+'</p></div>'+regimeTabs()+'</section>'+
  '<section class="search-panel entity-search"><form id="entity-search-form"><div class="search-body">'+input('query',t('你需要核查哪个主体？','Who do you need to screen?'),t('输入企业名称、人员姓名、地址或识别号','Enter a business name, person’s name, address, or identifier'))+
  '<div class="entity-controls">'+button(state.advanced?t('收起精确条件','Hide specific fields'):t('补充名称、地址或识别号','Add specific name, address, or ID'),'advanced','quiet-button','id="entity-advanced"')+'<label class="entity-fuzzy"><input id="entity-fuzzy" type="checkbox" data-ent-field="fuzzy" '+(state.fuzzy?'checked':'')+'>'+t('包含近似名称','Include similar names')+'</label></div>'+
  (state.advanced?'<div class="entity-fields">'+input('name',t('名称／别名','Name / alias'))+input('address',t('地址关键词','Address keywords'))+input('identifier',t('识别号／名单编号','Identifier / list ID'))+'</div><p class="small muted">'+t('多个字段同时满足才返回；识别号采用精确匹配，不自动修正。','All supplied fields must match. Identifiers use exact matching without automatic correction.')+'</p>':'')+
- '<div class="entity-controls">'+button(t('从文件提取主体','Extract parties from a file'),'documents','secondary')+'<div>'+button(t('清空','Clear'),'clear','quiet-button')+' <button type="submit" class="primary" '+(!index?'disabled':'')+'>'+t(index?'查询名单':'载入名单中…',index?'Screen parties':'Loading lists…')+'</button></div></div></div></form></section>'+
+ '<div class="entity-controls">'+button(t('从文件提取主体','Extract parties from a file'),'documents','secondary')+'<div>'+button(t('清空','Clear'),'clear','quiet-button')+' <button type="submit" class="primary">'+t('查询名单','Screen parties')+'</button></div></div></div></form></section>'+
  (state.batchProgress?'<div class="query-interpretation" role="status" aria-live="polite">'+esc(t('正在核对 '+state.batchProgress.done+' / '+state.batchProgress.total+' 个主体；完成后统一更新结果。下方仍为上次完成的结果，请以其查询条件为准。','Screening '+state.batchProgress.done+' / '+state.batchProgress.total+' parties; results update when the batch finishes. Any results below are from the last completed screening and retain its conditions.'))+' '+button(t('取消本批','Cancel this batch'),'cancel-batch','text-button','id="entity-cancel-batch"')+'</div>':'')+(state.error?'<div class="error-banner" role="alert">'+esc(L(state.error))+' '+(state.error.kind==='input'?'':button(t('重试载入','Retry loading'),'retry','text-button'))+'</div>':'')+
  (index?'<div class="entity-filters">'+options('source',facets.sources,state.regime==='CN'?t('中国默认来源（不含联合国辅助）','Default China sources (excluding UN auxiliary)'):t('全部来源','All sources'))+options('type',facets.types,t('全部类型','All types'))+options('status',facets.statuses,t('全部状态','All statuses'))+'</div>':'')+
- '<div class="entity-context"><span class="entity-context-number">'+(index?(state.source==='CN-UN'?index.metadata.counts.UNAuxiliary:index.metadata.counts[state.regime]).toLocaleString(state.lang==='zh'?'zh-CN':'en-US'):'—')+'</span><span>'+(state.source==='CN-UN'?t('条联合国辅助记录 · 中国适用性另核','UN auxiliary records · Chinese applicability requires review'):t('条列示记录 · 按所选制度独立检索','listing records · searched within the selected regime'))+'</span><span>'+t('记录数不等于主体数；同一主体可涉及不同措施。','Record counts are not unique-party counts; one party may have several measures.')+'</span></div>'+
- (state.source==='CN-UN'?'<div class="query-interpretation entity-un-scope"><strong>'+t('当前仅查询联合国辅助来源','Searching the UN auxiliary source only')+'</strong><p>'+t('这些记录不属于中国自主制裁清单。须分别核查联合国具体机制及中国实施要求；伊朗机制尤其需要核查中国官方立场，不能直接形成中国法交易禁止结论。','These records are not an autonomous Chinese sanctions list. Review each UN regime and Chinese implementation requirements separately. Iran-regime results particularly require review of China’s official position; they do not establish a Chinese-law transaction prohibition.')+'</p></div>':'')+'<div class="entity-result-output" aria-busy="'+Boolean(state.batchProgress)+'">'+(state.batch?batchPage():state.result?resultsPage():'<div class="entity-start"><div class="entity-step"><strong>01</strong><span>'+t('输入已知身份信息','Enter known identity details')+'</span></div><div class="entity-step"><strong>02</strong><span>'+t('比较名称、地址和识别号','Compare names, addresses, and IDs')+'</span></div><div class="entity-step"><strong>03</strong><span>'+t('核对措施及下一步动作','Review measures and next actions')+'</span></div></div>')+'</div>'+coverage(index);
+ '<div class="entity-context"><span class="entity-context-number">'+(scopeReady()?(state.source==='CN-UN'?index.metadata.counts.UNAuxiliary:index.metadata.counts[state.regime]).toLocaleString(state.lang==='zh'?'zh-CN':'en-US'):'—')+'</span><span>'+(state.source==='CN-UN'?t('条联合国辅助记录 · 中国适用性另核','UN auxiliary records · Chinese applicability requires review'):t('条列示记录 · 按所选制度独立检索','listing records · searched within the selected regime'))+'</span><span>'+t('记录数不等于主体数；同一主体可涉及不同措施。','Record counts are not unique-party counts; one party may have several measures.')+'</span></div>'+
+ (state.source==='CN-UN'?'<div class="query-interpretation entity-un-scope"><strong>'+t('当前仅查询联合国辅助来源','Searching the UN auxiliary source only')+'</strong><p>'+t('这些记录不属于中国自主制裁清单。须分别核查联合国具体机制及中国实施要求；伊朗机制尤其需要核查中国官方立场，不能直接形成中国法交易禁止结论。','These records are not an autonomous Chinese sanctions list. Review each UN regime and Chinese implementation requirements separately. Iran-regime results particularly require review of China’s official position; they do not establish a Chinese-law transaction prohibition.')+'</p></div>':'')+'<div class="entity-result-output" aria-busy="'+Boolean(state.batchProgress||state.pending||(!scopeReady()&&!state.error))+'">'+((state.pending||(!scopeReady()&&!state.error))?'<div class="query-interpretation" role="status" aria-live="polite">'+esc(t(state.pending?'已收到查询，正在准备所选名单。每次等待不超过 12.5 秒。':'正在准备所选名单，你可以先输入身份信息。',state.pending?'Your search has been received. Preparing the selected list, with a 12.5-second wait limit.':'Preparing the selected list. You can enter identity details now.'))+'</div>':'')+(state.batch?batchPage():state.result?resultsPage():'<div class="entity-start"><div class="entity-step"><strong>01</strong><span>'+t('输入已知身份信息','Enter known identity details')+'</span></div><div class="entity-step"><strong>02</strong><span>'+t('比较名称、地址和识别号','Compare names, addresses, and IDs')+'</span></div><div class="entity-step"><strong>03</strong><span>'+t('核对措施及下一步动作','Review measures and next actions')+'</span></div></div>')+'</div>'+coverage(index);
 }
 function warningText(w){return L(w?.text||w?.message||w?.label||w)||'';}
 function matchText(result) {
@@ -116,12 +148,20 @@ function detailPage(){const r=E().getRecord(indexes[state.regime],state.detail);
  (L(r.restrictions)?'<p>'+esc(L(r.restrictions))+'</p>':'')+measureEvidence(r)+'<div class="entity-source-links">'+sourceLink(r.sourceUrl,t('打开列示来源','Open listing source'))+sourceLink(r.statusUrl,t('打开状态变更来源','Open status source'))+'</div></section></div>'+
  statusReview(r)+'<section class="content-card entity-next"><h2>'+t('接下来怎么做','What to do next')+'</h2><ol>'+steps.map(s=>'<li>'+esc(L(s))+'</li>').join('')+'</ol><p class="small muted">'+t('以下动作帮助完成核实，不构成已确认的交易禁令、许可判断或解除证明。','These steps support verification; they are not a confirmed transaction prohibition, licensing decision, or proof of removal.')+'</p></section>'+
  '<details class="content-card"><summary>'+t('查看完整来源字段','View all source fields')+'</summary><p class="small muted">'+t('以下字段内容保留来源原文。空白表示未提供；内部记录键不是官方身份号码。','Values below retain the original source wording. Blank means not supplied; an internal record key is not an official identity number.')+'</p><div class="entity-raw-wrap" tabindex="0" role="region" aria-label="'+t('完整来源字段，可横向滚动','Complete source fields, horizontally scrollable')+'"><table class="entity-raw"><tbody>'+fields.map((field,i)=>cells[i]?'<tr><th scope="row">'+esc(E().fieldLabel(field,state.lang))+'</th><td>'+esc(cells[i])+'</td></tr>':'').join('')+'</tbody></table></div></details></div>';}
-function perform(keepOperation=false){if(!keepOperation)operation++;pendingBatchInputs=null;state.batchProgress=null;if(!indexes[state.regime])return;if(![state.query,state.name,state.address,state.identifier].some(x=>x.trim())){state.error={zh:'请至少填写名称、地址或识别号中的一项。',en:'Provide at least a name, address, or identifier.'};state.result=null;return;}state.error=null;state.batch=null;state.batchScope=null;state.result=E().search(indexes[state.regime],{regime:state.regime,query:state.query,name:state.name,address:state.address,identifier:state.identifier,source:state.source,type:state.type,status:state.status,fuzzy:state.fuzzy,offset:state.offset,limit:20});}
-function loadFailure(){state.error={zh:'名单文件未能载入。请重试载入后重新查询。',en:'The list files could not load. Retry loading and screen again.'};rerender();}
-async function setQuery(query){query=query&&typeof query==='object'?query:{};const regime=state.regime,token=++operation;pendingBatchInputs=null;state.batchProgress=null;state.detail=null;state.offset=0;state.query=textValue(query.query);state.name=textValue(query.name);state.address=textValue(query.address);state.identifier=textValue(query.identifier);state.advanced=!!(state.name||state.address||state.identifier);state.source=state.type=state.status='all';try{await ensure(regime);if(state.regime!==regime||token!==operation)return;perform(true);rerender();}catch{if(state.regime===regime&&token===operation)loadFailure();}}
+function perform(keepOperation=false){if(!keepOperation)operation++;pendingBatchInputs=null;state.batchProgress=null;state.pending=false;if(!scopeReady())return;if(![state.query,state.name,state.address,state.identifier].some(x=>x.trim())){state.error={kind:'input',zh:'请至少填写名称、地址或识别号中的一项。',en:'Provide at least a name, address, or identifier.'};state.result=null;return;}state.error=null;state.batch=null;state.batchScope=null;state.result=E().search(indexes[state.regime],{regime:state.regime,query:state.query,name:state.name,address:state.address,identifier:state.identifier,source:state.source,type:state.type,status:state.status,fuzzy:state.fuzzy,offset:state.offset,limit:20});}
+function loadFailure(error){state.error=loadMessage(error);state.pending=false;rerender();}
+async function searchWhenReady(){
+ if(scopeReady()){perform();rerender();return;}
+ if(state.pending)return;
+ const regime=state.regime,source=state.source,token=++operation;
+ pendingBatchInputs=null;state.batchProgress=null;state.pending=true;state.error=null;rerender();
+ try{await ensure(regime,source);if(state.regime!==regime||state.source!==source||token!==operation)return;perform(true);rerender();}
+ catch(error){if(state.regime===regime&&state.source===source&&token===operation)loadFailure(error);}
+}
+async function setQuery(query){query=query&&typeof query==='object'?query:{};const regime=state.regime,token=++operation;pendingBatchInputs=null;state.batchProgress=null;state.pending=true;state.error=null;state.detail=null;state.offset=0;state.query=textValue(query.query);state.name=textValue(query.name);state.address=textValue(query.address);state.identifier=textValue(query.identifier);state.advanced=!!(state.name||state.address||state.identifier);state.source=state.type=state.status='all';rerender();try{await ensure(regime);if(state.regime!==regime||token!==operation)return;perform(true);rerender();}catch(error){if(state.regime===regime&&token===operation)loadFailure(error);}}
 async function batch(items){
- const regime=state.regime,token=++operation,source=state.source,type=state.type,status=state.status,fuzzy=state.fuzzy;
- state.batchProgress=null;pendingBatchInputs=null;
+ const regime=state.regime,token=++operation,source=state.source,type=state.type,status=state.status,fuzzy=state.fuzzy,deadline=clock()+LOAD_BUDGET;
+ state.batchProgress=null;state.pending=false;pendingBatchInputs=null;
  if(!Array.isArray(items)||items.length===0||items.length>100){state.error={kind:'input',zh:items?.length>100?'每批最多查询100个主体。本批未执行，请拆分后重新提交；已有查询结果仍保留。':'请提供1至100个主体，本批未执行；已有查询结果仍保留。',en:items?.length>100?'Each batch supports up to 100 parties. This batch was not run. Split it and submit again; previous results are retained.':'Provide 1 to 100 parties. This batch was not run; previous results are retained.'};rerender();return {ok:false,error:'batch_size'};}
  if(items.some(item=>!item||typeof item!=='object'||Array.isArray(item))){state.error={kind:'input',zh:'批量数据包含无效行，本批未执行；请检查后重新提交。',en:'The batch contains an invalid row and was not run. Check the data and submit again.'};rerender();return {ok:false,error:'batch_row'};}
  const inputs=items.map(supplied=>({query:textValue(supplied.query),name:textValue(supplied.name),address:textValue(supplied.address),identifier:textValue(supplied.identifier)}));
@@ -129,17 +169,19 @@ async function batch(items){
  try{
   // Let the pending state paint and accept cancellation before the first party.
   await yieldWork();if(state.regime!==regime||token!==operation)return;
-  await ensure(regime);if(state.regime!==regime||token!==operation)return;
+  await ensure(regime,source);if(state.regime!==regime||token!==operation)return;
   const completed=[];let lastYield=clock();
   for(let i=0;i<inputs.length;i++){
+   if(clock()>=deadline)throw referenceError('PARTY_TIMEOUT','Party screening exceeded 12.5 seconds');
    const input=inputs[i],result=E().search(indexes[regime],{...input,regime,source,type,status,limit:5,fuzzy});completed.push({input,result});
    if(i+1<inputs.length&&((i+1)%5===0||clock()-lastYield>=40)){
     state.batchProgress={done:i+1,total:inputs.length};rerender();await yieldWork();
     if(state.regime!==regime||token!==operation)return;lastYield=clock();
    }
   }
+  if(clock()>=deadline)throw referenceError('PARTY_TIMEOUT','Party screening exceeded 12.5 seconds');
   state.result=null;state.batch=completed;state.batchScope={regime,source,type,status,fuzzy};pendingBatchInputs=null;state.batchProgress=null;rerender();
- }catch{if(state.regime===regime&&token===operation){pendingBatchInputs=null;state.batchProgress=null;loadFailure();}}
+ }catch(error){if(state.regime===regime&&token===operation){pendingBatchInputs=null;state.batchProgress=null;loadFailure(error);}}
 }
 
 
@@ -153,14 +195,14 @@ function exportResults(){
 }
 
 if(typeof document!=='undefined'){
- document.addEventListener('submit',event=>{if(event.target.id!=='entity-search-form')return;event.preventDefault();state.offset=0;perform();rerender();document.querySelector('.entity-results')?.scrollIntoView({behavior:'smooth',block:'start'});});
- document.addEventListener('input',event=>{const field=event.target.dataset?.entField;if(field==='fuzzy')state.fuzzy=!!event.target.checked;else if(TEXT_FIELDS.has(field))state[field]=textValue(event.target.value);});
- document.addEventListener('change',event=>{const field=event.target.dataset?.entFilter;if(FILTER_FIELDS.has(field)){const repeat=pendingBatchInputs||(state.batch||[]).map(item=>item.input);operation++;pendingBatchInputs=null;state.batchProgress=null;state[field]=textValue(event.target.value);state.offset=0;if(repeat.length){batch(repeat);return;}if(state.result)perform();rerender();}});
+ document.addEventListener('submit',event=>{if(event.target.id!=='entity-search-form')return;event.preventDefault();state.offset=0;searchWhenReady();document.querySelector('.entity-results')?.scrollIntoView({behavior:'smooth',block:'start'});});
+ document.addEventListener('input',event=>{const field=event.target.dataset?.entField;if(field==='fuzzy'){if(state.pending){operation++;state.pending=false;}state.fuzzy=!!event.target.checked;}else if(TEXT_FIELDS.has(field)){if(state.pending){operation++;state.pending=false;}state[field]=textValue(event.target.value);}});
+ document.addEventListener('change',event=>{const field=event.target.dataset?.entFilter;if(FILTER_FIELDS.has(field)){const repeat=pendingBatchInputs||(state.batch||[]).map(item=>item.input),hadResult=!!state.result;operation++;pendingBatchInputs=null;state.batchProgress=null;state.pending=false;state.error=null;state[field]=textValue(event.target.value);state.offset=0;if(repeat.length){batch(repeat);return;}if(hadResult){if(!scopeReady())state.result=null;searchWhenReady();return;}rerender();}});
  document.addEventListener('click',async event=>{const el=event.target.closest('[data-ent-action]');if(!el)return;const action=el.dataset.entAction;
  if(action==='advanced'){state.advanced=!state.advanced;rerender();}
  if(action==='documents')callbacks.onDocuments?.();
  if(action==='cancel-batch'){operation++;pendingBatchInputs=null;state.batchProgress=null;rerender();}
- if(action==='clear'){operation++;pendingBatchInputs=null;Object.assign(state,{query:'',name:'',address:'',identifier:'',source:'all',type:'all',status:'all',offset:0,result:null,batch:null,batchScope:null,batchProgress:null,detail:null,error:null});rerender();}
+ if(action==='clear'){operation++;pendingBatchInputs=null;Object.assign(state,{query:'',name:'',address:'',identifier:'',source:'all',type:'all',status:'all',offset:0,result:null,batch:null,batchScope:null,batchProgress:null,detail:null,error:null,pending:false});rerender();}
  if(action==='retry'){state.error=null;rerender();}
  if(action==='detail'){state.detail=el.dataset.id;rerender();root.scrollTo?.({top:0,behavior:'auto'});}
  if(action==='back'){state.detail=null;rerender();}

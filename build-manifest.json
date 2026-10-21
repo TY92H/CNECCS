@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "appVersion": "0.5.0",
+  "appVersion": "0.6.0",
   "deploymentTarget": "github-pages",
-  "sourceBuildManifestSha256": "bcd68e619301d74f24cc6f15be08b8117dd1bceb433eeae966ffc5a327ba2f11",
+  "sourceBuildManifestSha256": "b83b03f4b33fdd5f1098d5b829934dad5c9a7ce5704ca41264271c165af12940",
   "adaptations": [
     "Add supported CSP meta before resources",
     "Omit Cloudflare-only _headers",
@@ -16,8 +16,8 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     "app.js": {
-      "bytes": 79196,
-      "sha256": "6f8858a99031da98ce9db14e7bf1d1d4d5cf4dd4de75a395c9616d707b318e61"
+      "bytes": 83669,
+      "sha256": "bf734cec88c8af8317ad38109764c27b15d4cc4fea36826ae8f47517718fd455"
     },
     "assets/logo.png": {
       "bytes": 838061,
@@ -45,11 +45,11 @@
     },
     "build-info.json": {
       "bytes": 331,
-      "sha256": "f6d63e547faa48100adb5058258f963a5189f849df2a31e107f091b23ee3f129"
+      "sha256": "2fc234a27e694ad1904202767d100575d02bcca7c2d67249bd2c16f52c0526bd"
     },
     "corpus-loader.js": {
-      "bytes": 14063,
-      "sha256": "91003538d7eb5d347326be68888d35f6d369e53bc16768c9a639aaa28c77f9f6"
+      "bytes": 106584,
+      "sha256": "71b581bbbd4006a3e66059bb20467b96f7a5c66d6c5903e88070b88a43675a45"
     },
     "data/cn-entities-extra.json": {
       "bytes": 15002,
@@ -92,16 +92,16 @@
       "sha256": "bdb284479a4ea7c4d5728038f1874b766972fee598ec4b5ce82597fb39076ef8"
     },
     "entities-ui.js": {
-      "bytes": 35537,
-      "sha256": "63c8b42d47c119f599cbf514fa2a44e302136e3d1e12045f8798da44ff82dd0a"
+      "bytes": 40351,
+      "sha256": "54f221e628854780b00ecd015b53a876aed1aae313ffafe6e29b1fc7810a9aef"
     },
     "entities.js": {
       "bytes": 46034,
       "sha256": "b44882d67e63c54cfb98c7161ce5401c7d004a533a874d6b1cf3b16674d38713"
     },
     "index.html": {
-      "bytes": 1343,
-      "sha256": "46e55a2d4c036052733647e518e934a1817808f4ce2fab05bd39519573a04703"
+      "bytes": 7781,
+      "sha256": "076b66ab67635b679bc7944ce384018d2e13d9743c62cd5bb80faab9f4c8ba07"
     },
     "reference-details-cn-00.01d6886273970c44.json": {
       "bytes": 739942,
@@ -179,25 +179,53 @@
       "bytes": 577236,
       "sha256": "cfa121a3d80a340abcbeed15922a423ba0c3196bdb80d49e080b5434ee7ea4f9"
     },
-    "reference-index-cn.9b9ee2ede4accac5.json": {
-      "bytes": 5142648,
-      "sha256": "9b9ee2ede4accac5cb41bf5cb7faf6840fd77ba1f5bc291f05c0ee1dd12e42af"
+    "reference-index-cn-00.88c77922545554dd.bin": {
+      "bytes": 225000,
+      "sha256": "88c77922545554dde5f35f2e4623737a13b7fa548054dd7cb75c86639d3d8b36"
     },
-    "reference-index-us.25a166a431267137.json": {
-      "bytes": 7395290,
-      "sha256": "25a166a431267137268626bf478b0b6dd36c88639d05ac226341292c0d72102e"
+    "reference-index-cn-01.f5968654b1c569f4.bin": {
+      "bytes": 208554,
+      "sha256": "f5968654b1c569f424454af299fb219a9bfa1028609ea9f46b5a9311d68c4050"
+    },
+    "reference-index-cn.ee28c71e6bd43033.json": {
+      "bytes": 2862865,
+      "sha256": "ee28c71e6bd43033f142bbfa581a43617cb9de720c45e569b3f76218d27bf5b1"
+    },
+    "reference-index-us-00.1d9bc482efc1bac4.bin": {
+      "bytes": 225000,
+      "sha256": "1d9bc482efc1bac4e1c233e40ef6b863dbf1710e8c143931ff8248dbcf7bc3cb"
+    },
+    "reference-index-us-01.10907951ac75bf25.bin": {
+      "bytes": 225000,
+      "sha256": "10907951ac75bf255793bbd9e69a598878ae9e60b67d53609070e91a363d6bc4"
+    },
+    "reference-index-us-02.a4e1b284b0cc8e0b.bin": {
+      "bytes": 225000,
+      "sha256": "a4e1b284b0cc8e0b8411b2936cd9d76ca64c736094a66a339d8c73c87065dec1"
+    },
+    "reference-index-us-03.b5c5cc9f4ac10a63.bin": {
+      "bytes": 130157,
+      "sha256": "b5c5cc9f4ac10a632ba4500d2f91038451609849e3dbc2d0824710d3e41cbc0b"
+    },
+    "reference-index-us.51ab1cb234385ab0.json": {
+      "bytes": 3982852,
+      "sha256": "51ab1cb234385ab000c2fa4e2621ea9d1b4efe347d765d3eae482d413dab2b05"
     },
     "reference-manifest.json": {
-      "bytes": 81903,
-      "sha256": "ac867f512a26372eb3d484164e362720f7f22afb97e068001e6b0a36e4131fef"
+      "bytes": 83057,
+      "sha256": "b83da9c1359e406c159b14eab1003f2f113055b5248cdf32579edf48d2e8479f"
     },
     "rules.js": {
       "bytes": 53326,
       "sha256": "ab57304d41a6c424f3474847f592c4aa01a4c37301931fe42959e0aecc78e5fb"
     },
+    "runtime.js": {
+      "bytes": 322529,
+      "sha256": "e84c89760e6c17653e944823c669613fa4060f8bef5af0a623a802c6e0f526db"
+    },
     "search.js": {
-      "bytes": 35741,
-      "sha256": "c422c126b6a09ebc3d8adaabcbfd7a0b65ca9825f7d49aae725cf90e77e5d350"
+      "bytes": 41246,
+      "sha256": "3c76f9d8cedf71e6b9c208112de21b9fb88e663509029064cce91c87b6b2fd28"
     },
     "sources/china-control-list.pdf": {
       "bytes": 1308334,
@@ -210,6 +238,10 @@
     "sources/us-commerce-control-list.htm": {
       "bytes": 2345317,
       "sha256": "18c25ebce80df4143b71286a8f67cfe434b9efce21cc079338cdaf1451f7f6a2"
+    },
+    "startup.js": {
+      "bytes": 121276,
+      "sha256": "99583c1441c1d4fce1b8ac7c6990a85e09fc8398677e1372c7e831fb595bf2c9"
     },
     "styles.css": {
       "bytes": 48874,

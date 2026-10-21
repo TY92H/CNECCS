@@ -7,7 +7,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
 
-  var ENGINE_VERSION = '1.0.0', INDEX_SCHEMA_VERSION = 1;
+  var ENGINE_VERSION = '1.0.0', INDEX_SCHEMA_VERSION = 1, COMPACT_INDEX_SCHEMA_VERSION = 2;
 
   // These are retrieval aliases, never legal equivalences or classification rules.
   var CONCEPTS = [
@@ -211,17 +211,32 @@
       finalizeVocabulary();
       return { search: search };
     }
-    function serialize(regime) {
+    function serialize(regime, compact) {
       finalizeVocabulary();
       var records = [], items = [];
       indexes[regime].forEach(function (item) {
         records.push(makeRecordStub(item.record));
-        items.push({ title: item.title, titleParts: item.titleParts.slice(), summary: item.summary,
-          keywords: item.keywords, body: item.body, codes: item.codes.slice(), cas: item.cas.slice(),
-          hs: item.hs.slice(), references: Array.from(item.references),
-          snippets: [snippetCandidates(item.record, 'zh'), snippetCandidates(item.record, 'en')] });
+        if (compact) {
+          var value = { keywords: item.keywords, codes: item.codes.slice(), cas: item.cas.slice(),
+            hs: item.hs.slice(), references: Array.from(item.references),
+            texts: (item.record.blocks || []).map(function (block) {
+              var text = block.text === undefined ? null : JSON.parse(JSON.stringify(block.text));
+              var cells = collectText(block.cells || block.rows || block.table);
+              return cells ? [text, cells] : [text];
+            }) };
+          var tail = normalize((item.record.subitems || []).map(function (subitem) {
+            return [subitem.code || '', collectText(subitem.text), collectText(subitem.parentConditions)].join(' ');
+          }).join('\n'));
+          if (tail) value.tail = tail;
+          items.push(value);
+        } else {
+          items.push({ title: item.title, titleParts: item.titleParts.slice(), summary: item.summary,
+            keywords: item.keywords, body: item.body, codes: item.codes.slice(), cas: item.cas.slice(),
+            hs: item.hs.slice(), references: Array.from(item.references),
+            snippets: [snippetCandidates(item.record, 'zh'), snippetCandidates(item.record, 'en')] });
+        }
       });
-      return { schemaVersion: INDEX_SCHEMA_VERSION, engineVersion: ENGINE_VERSION, regime: regime,
+      return { schemaVersion: compact ? COMPACT_INDEX_SCHEMA_VERSION : INDEX_SCHEMA_VERSION, engineVersion: ENGINE_VERSION, regime: regime,
         records: records, items: items, vocab: Array.from(vocab) };
     }
 
@@ -388,6 +403,16 @@
     return builder.serialize(regime);
   }
 
+  // Store source text once. Identifiers, vocabulary and matching rules stay
+  // precomputed; body fields and exact snippet candidates are restored locally.
+  function serializeCompactSearchIndex(records, regime) {
+    if (!Array.isArray(records)) throw new TypeError('Search index records must be an array');
+    if (regime !== 'CN' && regime !== 'US') throw new TypeError('Search index regime must be CN or US');
+    var builder = createSearchEngineBuilder();
+    records.forEach(builder.addRecord);
+    return builder.serialize(regime, true);
+  }
+
   function validateSearchIndex(payload) {
     function object(value) { return value !== null && typeof value === 'object' && !Array.isArray(value); }
     function strings(value) {
@@ -397,7 +422,7 @@
     }
     function invalid(message) { throw new TypeError('Invalid search index: ' + message); }
     if (!object(payload)) invalid('expected an object');
-    if (payload.schemaVersion !== INDEX_SCHEMA_VERSION) invalid('unsupported schema version');
+    if (payload.schemaVersion !== INDEX_SCHEMA_VERSION && payload.schemaVersion !== COMPACT_INDEX_SCHEMA_VERSION) invalid('unsupported schema version');
     if (payload.engineVersion !== ENGINE_VERSION) invalid('incompatible search engine version');
     if (payload.regime !== 'CN' && payload.regime !== 'US') invalid('regime must be CN or US');
     if (!Array.isArray(payload.records) || !Array.isArray(payload.items) || payload.records.length !== payload.items.length) invalid('unaligned record arrays');
@@ -420,10 +445,25 @@
         if (record[key] !== undefined && !strings(record[key])) invalid('record ' + key);
       });
       var item = payload.items[index];
-      if (!object(item) || ['title', 'summary', 'keywords', 'body'].some(function (key) { return typeof item[key] !== 'string'; }) ||
-        !strings(item.titleParts) || item.titleParts.length !== 2 || ['codes', 'cas', 'hs', 'references'].some(function (key) { return !strings(item[key]); })) invalid('prepared fields');
-      var snippets = item.snippets;
-      if (!Array.isArray(snippets) || snippets.length !== 2 || !strings(snippets[0]) || !strings(snippets[1])) invalid('snippet candidates');
+      if (!object(item) || typeof item.keywords !== 'string' ||
+        ['codes', 'cas', 'hs', 'references'].some(function (key) { return !strings(item[key]); })) invalid('prepared fields');
+      if (payload.schemaVersion === COMPACT_INDEX_SCHEMA_VERSION) {
+        if (!Array.isArray(item.texts) || (item.tail !== undefined && typeof item.tail !== 'string')) invalid('compact text fields');
+        for (var blockIndex = 0; blockIndex < item.texts.length; blockIndex++) {
+          var block = item.texts[blockIndex];
+          if (!Array.isArray(block) || block.length < 1 || block.length > 2 || !(0 in block) ||
+            (block.length === 2 && typeof block[1] !== 'string')) invalid('compact text block');
+          var text = block[0];
+          if (text !== null && typeof text !== 'string' &&
+            !(typeof text === 'number' && Number.isFinite(text)) &&
+            !(object(text) && Object.keys(text).every(function (language) { return typeof text[language] === 'string'; }))) invalid('compact block text');
+        }
+      } else {
+        if (['title', 'summary', 'body'].some(function (key) { return typeof item[key] !== 'string'; }) ||
+          !strings(item.titleParts) || item.titleParts.length !== 2) invalid('prepared fields');
+        var snippets = item.snippets;
+        if (!Array.isArray(snippets) || snippets.length !== 2 || !strings(snippets[0]) || !strings(snippets[1])) invalid('snippet candidates');
+      }
     }
     if (!Array.isArray(payload.vocab)) invalid('vocabulary');
     var words = new Set();
@@ -435,13 +475,62 @@
     }
   }
 
-  // Hydration only checks the serialized structure and assembles lookups. It
-  // never scans or normalizes full reference text; snippets are prepared lazily.
+  function expandCompactItem(record, item) {
+    var title = pair(record.title), summary = pair(record.summary);
+    var body = item.texts.map(function (block) { return collectText(block[0]) + ' ' + (block[1] || ''); }).join('\n');
+    body += '\n' + (item.tail || '');
+    var snippets = ['zh', 'en'].map(function (language) {
+      var candidates = [];
+      if (summary[language]) candidates.push(String(summary[language]));
+      item.texts.forEach(function (block) { var text = pair(block[0])[language]; if (text) candidates.push(String(text)); });
+      if (title[language]) candidates.push(String(title[language]));
+      return candidates;
+    });
+    return { title: normalize(collectText(title)), titleParts: [normalize(title.zh), normalize(title.en)],
+      summary: normalize(collectText(summary)), keywords: item.keywords, body: normalize(body),
+      codes: item.codes, cas: item.cas, hs: item.hs, references: item.references, snippets: snippets };
+  }
+
+  function addIndexRecord(builder, payload, index) {
+    var record = payload.records[index], item = payload.items[index];
+    if (payload.schemaVersion === COMPACT_INDEX_SCHEMA_VERSION) item = expandCompactItem(record, item);
+    builder.addPrepared(record, item, index, item.snippets);
+  }
+
+  // Schema 1 already contains normalized fields. Schema 2 restores these from
+  // compact source text, preserving order, tables, subitems and exact snippets.
   function createSearchEngineFromIndex(payload) {
     validateSearchIndex(payload);
     var builder = createSearchEngineBuilder(payload.vocab);
-    payload.records.forEach(function (record, index) { builder.addPrepared(record, payload.items[index], index, payload.items[index].snippets); });
+    payload.records.forEach(function (_, index) { addIndexRecord(builder, payload, index); });
     return builder.finish();
+  }
+
+  async function createSearchEngineFromIndexAsync(payload, options) {
+    options = options || {};
+    var chunkSize = options.chunkSize === undefined ? 32 : options.chunkSize;
+    var budget = options.timeBudgetMs === undefined ? 6 : options.timeBudgetMs;
+    if (!Number.isSafeInteger(chunkSize) || chunkSize < 1 || chunkSize > 256 ||
+      typeof budget !== 'number' || !Number.isFinite(budget) || budget < 1 || budget > 50 ||
+      (options.onProgress !== undefined && typeof options.onProgress !== 'function')) throw new TypeError('Invalid index hydration options');
+    function checkAbort() {
+      if (options.signal && options.signal.aborted) { var error = new Error('Index hydration was canceled'); error.name = 'AbortError'; throw error; }
+    }
+    function yieldTask() { return new Promise(function (resolve) { setTimeout(resolve, 0); }); }
+    var now = typeof performance === 'object' && typeof performance.now === 'function'
+      ? function () { return performance.now(); } : Date.now;
+    checkAbort(); await yieldTask(); checkAbort();
+    validateSearchIndex(payload);
+    var builder = createSearchEngineBuilder(payload.vocab), index = 0, length = payload.records.length;
+    while (index < length) {
+      checkAbort(); var start = now(), count = 0;
+      do {
+        addIndexRecord(builder, payload, index); index++; count++;
+      } while (index < length && count < chunkSize && now() - start < budget);
+      if (options.onProgress) options.onProgress({ completed: index, total: length });
+      if (index < length) await yieldTask();
+    }
+    checkAbort(); return builder.finish();
   }
 
   function createSearchEngine(records) {
@@ -503,5 +592,7 @@
 
   return { createSearchEngine: createSearchEngine, createSearchEngineAsync: createSearchEngineAsync,
     serializeSearchIndex: serializeSearchIndex, createSearchEngineFromIndex: createSearchEngineFromIndex,
-    normalize: normalize, version: ENGINE_VERSION, searchIndexSchemaVersion: INDEX_SCHEMA_VERSION };
+    serializeCompactSearchIndex: serializeCompactSearchIndex, createSearchEngineFromIndexAsync: createSearchEngineFromIndexAsync,
+    normalize: normalize, version: ENGINE_VERSION, searchIndexSchemaVersion: INDEX_SCHEMA_VERSION,
+    compactSearchIndexSchemaVersion: COMPACT_INDEX_SCHEMA_VERSION };
 });
