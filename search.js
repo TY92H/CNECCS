@@ -7,6 +7,8 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
 
+  var ENGINE_VERSION = '1.0.0', INDEX_SCHEMA_VERSION = 1;
+
   // These are retrieval aliases, never legal equivalences or classification rules.
   var CONCEPTS = [
     ['wireless', ['wifi', 'wi fi', 'wi-fi', 'wlan', 'wireless', '无线', '无线网络', '无线通信']],
@@ -162,10 +164,25 @@
     return concepts.some(function (c) { return products.indexOf(c) !== -1; }) ? ['A'] : [];
   }
 
-  function createSearchEngineBuilder() {
-    var indexes = { CN: [], US: [] }, vocab = new Map(), snippetCache = new WeakMap();
+  function createSearchEngineBuilder(prebuiltVocabulary) {
+    var indexes = { CN: [], US: [] }, vocab = new Map(prebuiltVocabulary || []), snippetCache = new WeakMap(), snippetTexts = new WeakMap();
+    var vocabularyFinalized = !!prebuiltVocabulary;
     var compareCodes = new Intl.Collator(undefined, { numeric: true }).compare;
     var prepared = [];
+    function addPrepared(record, fields, index, candidates, allText) {
+      var item = {
+        record: record, index: index, title: fields.title, titleParts: fields.titleParts,
+        summary: fields.summary, keywords: fields.keywords, body: fields.body,
+        codes: fields.codes, cas: fields.cas, hs: fields.hs
+      };
+      item.all = allText === undefined ? [item.title, item.summary, item.keywords, item.body].join('\n') : allText;
+      item.references = new Set(fields.references);
+      if (!indexes[record.regime]) indexes[record.regime] = [];
+      indexes[record.regime].push(item);
+      prepared[index] = item;
+      if (candidates) snippetTexts.set(record, { zh: candidates[0], en: candidates[1] });
+      return item;
+    }
     function addRecord(record, index) {
       var title = pair(record.title), summary = pair(record.summary), blocks = record.blocks || [];
       var body = blocks.map(function (b) { return collectText(b.text) + ' ' + collectText(b.cells || b.rows || b.table); }).join('\n');
@@ -179,17 +196,33 @@
       };
       item.all = [item.title, item.summary, item.keywords, item.body].join('\n');
       item.references = new Set(extractCodes(item.all));
-      if (!indexes[record.regime]) indexes[record.regime] = [];
-      indexes[record.regime].push(item);
+      addPrepared(record, item, index, null, item.all);
       // Vocabulary is drawn from record titles and keywords, keeping typo expansion conservative.
       unique((item.title + ' ' + item.keywords).match(/[a-z]{4,30}/g) || []).forEach(function (word) {
         if (!STOP.has(word)) vocab.set(word, (vocab.get(word) || 0) + 1);
       });
-      prepared[index] = item;
+    }
+    function finalizeVocabulary() {
+      if (vocabularyFinalized) return;
+      CONCEPTS.forEach(function (c) { c.terms.forEach(function (term) { if (/^[a-z]{4,30}$/.test(term)) vocab.set(term, (vocab.get(term) || 0) + 2); }); });
+      vocabularyFinalized = true;
     }
     function finish() {
-      CONCEPTS.forEach(function (c) { c.terms.forEach(function (term) { if (/^[a-z]{4,30}$/.test(term)) vocab.set(term, (vocab.get(term) || 0) + 2); }); });
+      finalizeVocabulary();
       return { search: search };
+    }
+    function serialize(regime) {
+      finalizeVocabulary();
+      var records = [], items = [];
+      indexes[regime].forEach(function (item) {
+        records.push(makeRecordStub(item.record));
+        items.push({ title: item.title, titleParts: item.titleParts.slice(), summary: item.summary,
+          keywords: item.keywords, body: item.body, codes: item.codes.slice(), cas: item.cas.slice(),
+          hs: item.hs.slice(), references: Array.from(item.references),
+          snippets: [snippetCandidates(item.record, 'zh'), snippetCandidates(item.record, 'en')] });
+      });
+      return { schemaVersion: INDEX_SCHEMA_VERSION, engineVersion: ENGINE_VERSION, regime: regime,
+        records: records, items: items, vocab: Array.from(vocab) };
     }
 
     function interpret(query) {
@@ -321,10 +354,94 @@
       interpretation.scope = regime && regime !== 'ALL' ? regime : 'ALL';
       interpretation.mode = isEmpty ? 'browse' : identifierQuery ? 'identifier' : 'text';
       if (!isEmpty && !scored.length) interpretation.warnings.push({ zh: '当前资料与筛选条件下未找到匹配项；这不表示物项不受管制。可尝试部件、功能、英文名称或清除筛选。', en: 'No match was found in the current data and filters. This does not establish that the item is uncontrolled. Try a component, function, English name, or fewer filters.' });
-      var page = scored.slice(offset, offset + limit).map(function (hit) { hit.snippet = makeSnippet(hit.record, hit.matchedTerms, snippetCache); return hit; });
+      var page = scored.slice(offset, offset + limit).map(function (hit) { hit.snippet = makeSnippet(hit.record, hit.matchedTerms, snippetCache, snippetTexts); return hit; });
       return { results: page, total: scored.length, interpretation: interpretation, offset: offset, limit: limit };
     }
-    return { addRecord: addRecord, finish: finish };
+    return { addRecord: addRecord, addPrepared: addPrepared, finish: finish, serialize: serialize };
+  }
+
+  // Result cards and related-entry links need only these fields. The complete
+  // unchanged reference record is fetched separately when its detail is opened.
+  function makeRecordStub(record) {
+    var stub = {};
+    ['id', 'regime', 'code', 'kind', 'category', 'direction', 'title', 'summary', 'entryStatus', 'cas', 'hs', 'productGroup'].forEach(function (key) {
+      if (record[key] !== undefined) stub[key] = JSON.parse(JSON.stringify(record[key]));
+    });
+    return stub;
+  }
+
+  function snippetCandidates(record, lang) {
+    var summary = pair(record.summary)[lang], title = pair(record.title)[lang], candidates = [];
+    if (summary) candidates.push(String(summary));
+    (record.blocks || []).forEach(function (b) { var t = pair(b.text)[lang]; if (t) candidates.push(String(t)); });
+    if (title) candidates.push(String(title));
+    return candidates;
+  }
+
+  // Called by the build process with the complete corpus, not a filtered subset:
+  // typo suggestions use the same vocabulary frequencies in both jurisdictions.
+  function serializeSearchIndex(records, regime) {
+    if (!Array.isArray(records)) throw new TypeError('Search index records must be an array');
+    if (regime !== 'CN' && regime !== 'US') throw new TypeError('Search index regime must be CN or US');
+    var builder = createSearchEngineBuilder();
+    records.forEach(builder.addRecord);
+    return builder.serialize(regime);
+  }
+
+  function validateSearchIndex(payload) {
+    function object(value) { return value !== null && typeof value === 'object' && !Array.isArray(value); }
+    function strings(value) {
+      if (!Array.isArray(value)) return false;
+      for (var i = 0; i < value.length; i++) if (typeof value[i] !== 'string') return false;
+      return true;
+    }
+    function invalid(message) { throw new TypeError('Invalid search index: ' + message); }
+    if (!object(payload)) invalid('expected an object');
+    if (payload.schemaVersion !== INDEX_SCHEMA_VERSION) invalid('unsupported schema version');
+    if (payload.engineVersion !== ENGINE_VERSION) invalid('incompatible search engine version');
+    if (payload.regime !== 'CN' && payload.regime !== 'US') invalid('regime must be CN or US');
+    if (!Array.isArray(payload.records) || !Array.isArray(payload.items) || payload.records.length !== payload.items.length) invalid('unaligned record arrays');
+    var ids = new Set();
+    for (var index = 0; index < payload.records.length; index++) {
+      var record = payload.records[index];
+      if (!object(record) || typeof record.id !== 'string' || !record.id || record.regime !== payload.regime || ids.has(record.id)) invalid('record identity');
+      ids.add(record.id);
+      ['code', 'kind', 'direction', 'productGroup'].forEach(function (key) {
+        if (record[key] !== undefined && record[key] !== null && typeof record[key] !== 'string') invalid('record ' + key);
+      });
+      if (record.category !== undefined && record.category !== null && typeof record.category !== 'string' &&
+        (typeof record.category !== 'number' || !Number.isFinite(record.category))) invalid('record category');
+      ['title', 'summary', 'entryStatus'].forEach(function (key) {
+        var value = record[key];
+        if (value === undefined || value === null || typeof value === 'string') return;
+        if (!object(value) || Object.keys(value).some(function (lang) { return typeof value[lang] !== 'string'; })) invalid('record ' + key);
+      });
+      ['cas', 'hs'].forEach(function (key) {
+        if (record[key] !== undefined && !strings(record[key])) invalid('record ' + key);
+      });
+      var item = payload.items[index];
+      if (!object(item) || ['title', 'summary', 'keywords', 'body'].some(function (key) { return typeof item[key] !== 'string'; }) ||
+        !strings(item.titleParts) || item.titleParts.length !== 2 || ['codes', 'cas', 'hs', 'references'].some(function (key) { return !strings(item[key]); })) invalid('prepared fields');
+      var snippets = item.snippets;
+      if (!Array.isArray(snippets) || snippets.length !== 2 || !strings(snippets[0]) || !strings(snippets[1])) invalid('snippet candidates');
+    }
+    if (!Array.isArray(payload.vocab)) invalid('vocabulary');
+    var words = new Set();
+    for (var vocabularyIndex = 0; vocabularyIndex < payload.vocab.length; vocabularyIndex++) {
+      var entry = payload.vocab[vocabularyIndex];
+      if (!Array.isArray(entry) || entry.length !== 2 || typeof entry[0] !== 'string' || !/^[a-z]{4,30}$/.test(entry[0]) ||
+        !Number.isSafeInteger(entry[1]) || entry[1] < 1 || words.has(entry[0])) invalid('vocabulary entry');
+      words.add(entry[0]);
+    }
+  }
+
+  // Hydration only checks the serialized structure and assembles lookups. It
+  // never scans or normalizes full reference text; snippets are prepared lazily.
+  function createSearchEngineFromIndex(payload) {
+    validateSearchIndex(payload);
+    var builder = createSearchEngineBuilder(payload.vocab);
+    payload.records.forEach(function (record, index) { builder.addPrepared(record, payload.items[index], index, payload.items[index].snippets); });
+    return builder.finish();
   }
 
   function createSearchEngine(records) {
@@ -355,17 +472,14 @@
     return builder.finish();
   }
 
-  function makeSnippet(record, terms, cache) {
+  function makeSnippet(record, terms, cache, texts) {
     var result = {}, candidatesByLanguage = cache.get(record);
     // Full text is normalized only when a record first appears on a result page.
     // The source corpus remains untouched and returned snippets are fresh objects.
     if (!candidatesByLanguage) {
       candidatesByLanguage = {};
       ['zh', 'en'].forEach(function (lang) {
-        var summary = pair(record.summary)[lang], title = pair(record.title)[lang], candidates = [];
-        if (summary) candidates.push(summary);
-        (record.blocks || []).forEach(function (b) { var t = pair(b.text)[lang]; if (t) candidates.push(t); });
-        if (title) candidates.push(title);
+        var stored = texts && texts.get(record), candidates = stored ? stored[lang] : snippetCandidates(record, lang);
         candidatesByLanguage[lang] = candidates.map(function (text) {
           return { normalized: normalize(text), text: String(text).replace(/\s+/g, ' ').trim() };
         });
@@ -387,5 +501,7 @@
     return result;
   }
 
-  return { createSearchEngine: createSearchEngine, createSearchEngineAsync: createSearchEngineAsync, normalize: normalize, version: '1.0.0' };
+  return { createSearchEngine: createSearchEngine, createSearchEngineAsync: createSearchEngineAsync,
+    serializeSearchIndex: serializeSearchIndex, createSearchEngineFromIndex: createSearchEngineFromIndex,
+    normalize: normalize, version: ENGINE_VERSION, searchIndexSchemaVersion: INDEX_SCHEMA_VERSION };
 });
