@@ -17,29 +17,38 @@ const button = (text,action,cls='secondary',attrs='') => '<button type="button" 
 const safe = value => {try{const u = new URL(value);return ['https:','http:'].includes(u.protocol)?u.href:'#';}catch{return '#';}};
 const rerender = () => callbacks.rerender && callbacks.rerender();
 function configure(options) {callbacks = options || {};}
-const LOAD_BUDGET = 12500;
+const RETRY_DELAYS = [2000,5000,10000,20000,30000];
 function referenceError(code,message){const error=new Error(message);error.code=code;return error;}
-function boundedLoad(work){
+function referenceLoad(work){
  const controller=typeof root.AbortController==='function'?new root.AbortController():null;
- const attempt={active:true,deadline:clock()+LOAD_BUDGET,signal:controller?.signal};
- attempt.check=()=>{if(!attempt.active||clock()>=attempt.deadline)throw referenceError('PARTY_TIMEOUT','Party reference loading exceeded 12.5 seconds');};
- let timer;
- const timeout=new Promise((_,reject)=>{timer=setTimeout(()=>{attempt.active=false;controller?.abort();reject(referenceError('PARTY_TIMEOUT','Party reference loading exceeded 12.5 seconds'));},LOAD_BUDGET);});
- const task=Promise.resolve().then(()=>work(attempt));
- return Promise.race([task,timeout]).finally(()=>{attempt.active=false;root.clearTimeout?.(timer);controller?.abort();});
+ const attempt={active:true,signal:controller?.signal};
+ attempt.check=()=>{if(!attempt.active)throw referenceError('PARTY_CANCELED','Party reference loading was canceled');};
+ attempt.wait=ms=>new Promise((resolve,reject)=>{
+  attempt.check();let timer;
+  const cancel=()=>{root.clearTimeout?.(timer);reject(referenceError('PARTY_CANCELED','Party reference loading was canceled'));};
+  timer=setTimeout(()=>{attempt.signal?.removeEventListener('abort',cancel);resolve();},ms);
+  attempt.signal?.addEventListener('abort',cancel,{once:true});
+ });
+ // Slow valid transfers stay alive; only a completed or terminally failed group is cleaned up.
+ return Promise.resolve().then(()=>work(attempt)).finally(()=>{attempt.active=false;controller?.abort();});
 }
 async function getJSON(path, embedded, attempt) {
  attempt.check();if(embedded)return embedded;
- for(let tries=0;tries<2;tries++){
+ for(let tries=0;;tries++){
+  attempt.check();
   try{
    const response=await fetch(path,{credentials:'omit',referrerPolicy:'no-referrer',...(attempt.signal?{signal:attempt.signal}:{})});
    attempt.check();
-   if(!response.ok){const error=referenceError('PARTY_HTTP','Reference HTTP '+response.status);error.transient=response.status===429||response.status>=500;throw error;}
+   if(!response.ok){
+    // Release an error body before retrying, without waiting on its stream or aborting sibling requests.
+    try{Promise.resolve(response.body?.cancel?.()).catch(()=>{});}catch{}
+    const error=referenceError('PARTY_HTTP','Reference HTTP '+response.status);error.transient=response.status===408||response.status===429||response.status>=500;throw error;
+   }
    const value=await response.json();attempt.check();return value;
   }catch(error){
    attempt.check();
    const transient=error.transient===true||(!error.code&&error.name!=='SyntaxError'&&error.name!=='AbortError');
-   if(tries===0&&transient){await yieldWork();continue;}
+   if(transient){await attempt.wait(RETRY_DELAYS[Math.min(tries,RETRY_DELAYS.length-1)]);continue;}
    if(!error.code)error.code=error.name==='SyntaxError'?'PARTY_INVALID':'PARTY_NETWORK';throw error;
   }
  }
@@ -52,7 +61,7 @@ async function ensure(regime,source='all') {
  if(!['CN','US'].includes(regime))throw referenceError('PARTY_REGIME','Unknown party regime');
  if(scopeReady(regime,source))return indexes[regime];
  const key=loadKey(regime,source);if(loading[key])return loading[key];
- const task=boundedLoad(async attempt=>{
+ const task=referenceLoad(async attempt=>{
   const embedded=root.CNECCS_ENTITY_DATA||{};let prepared;
   if(regime==='US')prepared={us:requireTable(await getJSON('data/us-entities-official.json',embedded.us,attempt),['_id','source','name'])};
   else if(source==='CN-UN'&&!embedded.unAux){
@@ -70,8 +79,8 @@ async function ensure(regime,source='all') {
  loading[key]=task;return task;
 }
 function loadMessage(error){const code=error?.code||'PARTY_INVALID';return {kind:'load',code,
- zh:code==='PARTY_TIMEOUT'?'本次名单准备已达到 12.5 秒，已停止等待。输入内容已保留，请重试。':code==='PARTY_INVALID'?'名单文件暂时无法读取。输入内容已保留，请重试；持续失败时请反馈此问题。':'所选名单暂时未能载入。输入内容已保留，请重试。',
- en:code==='PARTY_TIMEOUT'?'List preparation reached the 12.5-second limit. Waiting has stopped and your input is preserved. Please retry.':code==='PARTY_INVALID'?'The list file could not be read. Your input is preserved. Retry, and report the issue if it persists.':'The selected list could not load. Your input is preserved. Please retry.'};}
+ zh:code==='PARTY_INVALID'?'名单文件暂时无法读取。输入内容已保留，请重试；持续失败时请反馈此问题。':'所选名单文件无法载入。输入内容已保留，请重试；持续失败时请反馈此问题。',
+ en:code==='PARTY_INVALID'?'The list file could not be read. Your input is preserved. Retry, and report the issue if it persists.':'The selected list file could not load. Your input is preserved. Retry, and report the issue if it persists.'};}
 function sourcesFor(index){const values=index?E().search(index,{regime:state.regime,limit:1}).facets.sources.slice():[];if(state.regime==='CN'&&index&&!values.some(x=>x.key==='CN-UN'))values.push({key:'CN-UN',label:{zh:'联合国辅助核对（选用时载入）',en:'UN auxiliary screening (loads when selected)'},count:null});return values;}
 function reset(regime) {
  operation++;pendingBatchInputs=null;
@@ -102,7 +111,7 @@ function render(props) {
  (state.batchProgress?'<div class="query-interpretation" role="status" aria-live="polite">'+esc(t('正在核对 '+state.batchProgress.done+' / '+state.batchProgress.total+' 个主体；完成后统一更新结果。下方仍为上次完成的结果，请以其查询条件为准。','Screening '+state.batchProgress.done+' / '+state.batchProgress.total+' parties; results update when the batch finishes. Any results below are from the last completed screening and retain its conditions.'))+' '+button(t('取消本批','Cancel this batch'),'cancel-batch','text-button','id="entity-cancel-batch"')+'</div>':'')+(state.error?'<div class="error-banner" role="alert">'+esc(L(state.error))+' '+(state.error.kind==='input'?'':button(t('重试载入','Retry loading'),'retry','text-button'))+'</div>':'')+
  (index?'<div class="entity-filters">'+options('source',facets.sources,state.regime==='CN'?t('中国默认来源（不含联合国辅助）','Default China sources (excluding UN auxiliary)'):t('全部来源','All sources'))+options('type',facets.types,t('全部类型','All types'))+options('status',facets.statuses,t('全部状态','All statuses'))+'</div>':'')+
  '<div class="entity-context"><span class="entity-context-number">'+(scopeReady()?(state.source==='CN-UN'?index.metadata.counts.UNAuxiliary:index.metadata.counts[state.regime]).toLocaleString(state.lang==='zh'?'zh-CN':'en-US'):'—')+'</span><span>'+(state.source==='CN-UN'?t('条联合国辅助记录 · 中国适用性另核','UN auxiliary records · Chinese applicability requires review'):t('条列示记录 · 按所选制度独立检索','listing records · searched within the selected regime'))+'</span><span>'+t('记录数不等于主体数；同一主体可涉及不同措施。','Record counts are not unique-party counts; one party may have several measures.')+'</span></div>'+
- (state.source==='CN-UN'?'<div class="query-interpretation entity-un-scope"><strong>'+t('当前仅查询联合国辅助来源','Searching the UN auxiliary source only')+'</strong><p>'+t('这些记录不属于中国自主制裁清单。须分别核查联合国具体机制及中国实施要求；伊朗机制尤其需要核查中国官方立场，不能直接形成中国法交易禁止结论。','These records are not an autonomous Chinese sanctions list. Review each UN regime and Chinese implementation requirements separately. Iran-regime results particularly require review of China’s official position; they do not establish a Chinese-law transaction prohibition.')+'</p></div>':'')+'<div class="entity-result-output" aria-busy="'+Boolean(state.batchProgress||state.pending||(!scopeReady()&&!state.error))+'">'+((state.pending||(!scopeReady()&&!state.error))?'<div class="query-interpretation" role="status" aria-live="polite">'+esc(t(state.pending?'已收到查询，正在准备所选名单。每次等待不超过 12.5 秒。':'正在准备所选名单，你可以先输入身份信息。',state.pending?'Your search has been received. Preparing the selected list, with a 12.5-second wait limit.':'Preparing the selected list. You can enter identity details now.'))+'</div>':'')+(state.batch?batchPage():state.result?resultsPage():'<div class="entity-start"><div class="entity-step"><strong>01</strong><span>'+t('输入已知身份信息','Enter known identity details')+'</span></div><div class="entity-step"><strong>02</strong><span>'+t('比较名称、地址和识别号','Compare names, addresses, and IDs')+'</span></div><div class="entity-step"><strong>03</strong><span>'+t('核对措施及下一步动作','Review measures and next actions')+'</span></div></div>')+'</div>'+coverage(index);
+ (state.source==='CN-UN'?'<div class="query-interpretation entity-un-scope"><strong>'+t('当前仅查询联合国辅助来源','Searching the UN auxiliary source only')+'</strong><p>'+t('这些记录不属于中国自主制裁清单。须分别核查联合国具体机制及中国实施要求；伊朗机制尤其需要核查中国官方立场，不能直接形成中国法交易禁止结论。','These records are not an autonomous Chinese sanctions list. Review each UN regime and Chinese implementation requirements separately. Iran-regime results particularly require review of China’s official position; they do not establish a Chinese-law transaction prohibition.')+'</p></div>':'')+'<div class="entity-result-output" aria-busy="'+Boolean(state.batchProgress||state.pending||(!scopeReady()&&!state.error))+'">'+((state.pending||(!scopeReady()&&!state.error))?'<div class="query-interpretation" role="status" aria-live="polite">'+esc(t(state.pending?'已收到查询，正在准备所选名单。完成后将自动查询，无需重复提交。':'正在准备所选名单，你可以先输入身份信息。',state.pending?'Your search has been received. It will run automatically when the selected list is ready; no need to submit again.':'Preparing the selected list. You can enter identity details now.'))+'</div>':'')+(state.batch?batchPage():state.result?resultsPage():'<div class="entity-start"><div class="entity-step"><strong>01</strong><span>'+t('输入已知身份信息','Enter known identity details')+'</span></div><div class="entity-step"><strong>02</strong><span>'+t('比较名称、地址和识别号','Compare names, addresses, and IDs')+'</span></div><div class="entity-step"><strong>03</strong><span>'+t('核对措施及下一步动作','Review measures and next actions')+'</span></div></div>')+'</div>'+coverage(index);
 }
 function warningText(w){return L(w?.text||w?.message||w?.label||w)||'';}
 function matchText(result) {
@@ -160,7 +169,7 @@ async function searchWhenReady(){
 }
 async function setQuery(query){query=query&&typeof query==='object'?query:{};const regime=state.regime,token=++operation;pendingBatchInputs=null;state.batchProgress=null;state.pending=true;state.error=null;state.detail=null;state.offset=0;state.query=textValue(query.query);state.name=textValue(query.name);state.address=textValue(query.address);state.identifier=textValue(query.identifier);state.advanced=!!(state.name||state.address||state.identifier);state.source=state.type=state.status='all';rerender();try{await ensure(regime);if(state.regime!==regime||token!==operation)return;perform(true);rerender();}catch(error){if(state.regime===regime&&token===operation)loadFailure(error);}}
 async function batch(items){
- const regime=state.regime,token=++operation,source=state.source,type=state.type,status=state.status,fuzzy=state.fuzzy,deadline=clock()+LOAD_BUDGET;
+ const regime=state.regime,token=++operation,source=state.source,type=state.type,status=state.status,fuzzy=state.fuzzy;
  state.batchProgress=null;state.pending=false;pendingBatchInputs=null;
  if(!Array.isArray(items)||items.length===0||items.length>100){state.error={kind:'input',zh:items?.length>100?'每批最多查询100个主体。本批未执行，请拆分后重新提交；已有查询结果仍保留。':'请提供1至100个主体，本批未执行；已有查询结果仍保留。',en:items?.length>100?'Each batch supports up to 100 parties. This batch was not run. Split it and submit again; previous results are retained.':'Provide 1 to 100 parties. This batch was not run; previous results are retained.'};rerender();return {ok:false,error:'batch_size'};}
  if(items.some(item=>!item||typeof item!=='object'||Array.isArray(item))){state.error={kind:'input',zh:'批量数据包含无效行，本批未执行；请检查后重新提交。',en:'The batch contains an invalid row and was not run. Check the data and submit again.'};rerender();return {ok:false,error:'batch_row'};}
@@ -172,14 +181,12 @@ async function batch(items){
   await ensure(regime,source);if(state.regime!==regime||token!==operation)return;
   const completed=[];let lastYield=clock();
   for(let i=0;i<inputs.length;i++){
-   if(clock()>=deadline)throw referenceError('PARTY_TIMEOUT','Party screening exceeded 12.5 seconds');
    const input=inputs[i],result=E().search(indexes[regime],{...input,regime,source,type,status,limit:5,fuzzy});completed.push({input,result});
    if(i+1<inputs.length&&((i+1)%5===0||clock()-lastYield>=40)){
     state.batchProgress={done:i+1,total:inputs.length};rerender();await yieldWork();
     if(state.regime!==regime||token!==operation)return;lastYield=clock();
    }
   }
-  if(clock()>=deadline)throw referenceError('PARTY_TIMEOUT','Party screening exceeded 12.5 seconds');
   state.result=null;state.batch=completed;state.batchScope={regime,source,type,status,fuzzy};pendingBatchInputs=null;state.batchProgress=null;rerender();
  }catch(error){if(state.regime===regime&&token===operation){pendingBatchInputs=null;state.batchProgress=null;loadFailure(error);}}
 }

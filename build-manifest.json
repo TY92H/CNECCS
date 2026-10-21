@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "appVersion": "0.6.0",
+  "appVersion": "0.6.1",
   "deploymentTarget": "github-pages",
-  "sourceBuildManifestSha256": "b83b03f4b33fdd5f1098d5b829934dad5c9a7ce5704ca41264271c165af12940",
+  "sourceBuildManifestSha256": "5feb240c2390d76d0019cb418f0d52c5d818ba5ddef34d4392dd0726c858e139",
   "adaptations": [
     "Add supported CSP meta before resources",
     "Omit Cloudflare-only _headers",
@@ -16,8 +16,8 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     "app.js": {
-      "bytes": 83669,
-      "sha256": "bf734cec88c8af8317ad38109764c27b15d4cc4fea36826ae8f47517718fd455"
+      "bytes": 83741,
+      "sha256": "d3a729d9a3e812ff3e18f0b83ee4550c0288aea0d30a15debe8c2d3e64231c69"
     },
     "assets/logo.png": {
       "bytes": 838061,
@@ -45,11 +45,11 @@
     },
     "build-info.json": {
       "bytes": 331,
-      "sha256": "2fc234a27e694ad1904202767d100575d02bcca7c2d67249bd2c16f52c0526bd"
+      "sha256": "e96013d39689135c1e6c8a44692e4cfaceb7d81b732d4fe557cb465a6d9e9e40"
     },
     "corpus-loader.js": {
-      "bytes": 106584,
-      "sha256": "71b581bbbd4006a3e66059bb20467b96f7a5c66d6c5903e88070b88a43675a45"
+      "bytes": 108537,
+      "sha256": "7247c3af94e133ebc089ded91533afa618a77acd5d68b8992cf4595df19259c5"
     },
     "data/cn-entities-extra.json": {
       "bytes": 15002,
@@ -92,8 +92,8 @@
       "sha256": "bdb284479a4ea7c4d5728038f1874b766972fee598ec4b5ce82597fb39076ef8"
     },
     "entities-ui.js": {
-      "bytes": 40351,
-      "sha256": "54f221e628854780b00ecd015b53a876aed1aae313ffafe6e29b1fc7810a9aef"
+      "bytes": 40380,
+      "sha256": "62ff786057d404338e8541ed7b84af34af096799f7eff1d013ea37bbbe4da347"
     },
     "entities.js": {
       "bytes": 46034,
@@ -101,7 +101,7 @@
     },
     "index.html": {
       "bytes": 7781,
-      "sha256": "076b66ab67635b679bc7944ce384018d2e13d9743c62cd5bb80faab9f4c8ba07"
+      "sha256": "04bc8c3933e8782bad78ebd6df65366e0a2fa1cb54f54d4afcd158bad92d09c5"
     },
     "reference-details-cn-00.01d6886273970c44.json": {
       "bytes": 739942,
@@ -220,8 +220,8 @@
       "sha256": "ab57304d41a6c424f3474847f592c4aa01a4c37301931fe42959e0aecc78e5fb"
     },
     "runtime.js": {
-      "bytes": 322529,
-      "sha256": "e84c89760e6c17653e944823c669613fa4060f8bef5af0a623a802c6e0f526db"
+      "bytes": 322630,
+      "sha256": "aef68ce3ded91522f06e1d094e2b812cd3025713db3ea1fec7d39771602bcd48"
     },
     "search.js": {
       "bytes": 41246,
@@ -240,8 +240,8 @@
       "sha256": "18c25ebce80df4143b71286a8f67cfe434b9efce21cc079338cdaf1451f7f6a2"
     },
     "startup.js": {
-      "bytes": 121276,
-      "sha256": "99583c1441c1d4fce1b8ac7c6990a85e09fc8398677e1372c7e831fb595bf2c9"
+      "bytes": 125438,
+      "sha256": "00d1190d3a2e49a2d81d005c0e9905e9a084e27678cf7c8a1e5d951775906051"
     },
     "styles.css": {
       "bytes": 48874,
